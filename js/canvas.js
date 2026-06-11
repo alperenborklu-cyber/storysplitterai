@@ -296,6 +296,14 @@ export class StoryboardCanvas {
       this.isPanning = true;
       this.startPanX = e.clientX - this.panX;
       this.startPanY = e.clientY - this.panY;
+      
+      // Deselect active box if left-clicked on empty space
+      if (!clickedOnBoxOrHandle && e.button === 0 && !e.altKey && !e.shiftKey && !e.ctrlKey) {
+        this.setSelectedBoxId(null);
+        if (this.callbacks.onSelectBox) {
+          this.callbacks.onSelectBox(null);
+        }
+      }
     }
   }
 
