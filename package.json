@@ -1,0 +1,17 @@
+{
+  "name": "storysplitter",
+  "version": "1.0.0",
+  "description": "StorySplitter - Storyboard Frame Extractor",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "jimp": "^1.6.1"
+  }
+}
