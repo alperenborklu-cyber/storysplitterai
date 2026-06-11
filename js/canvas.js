@@ -115,13 +115,29 @@ export class StoryboardCanvas {
     window.addEventListener('mouseup', () => this.handleMouseUp());
     this.container.addEventListener('dblclick', (e) => this.handleDoubleClick(e));
 
-    // Handle middle-click panning anywhere in the workspace (including background)
+    // Handle clicks anywhere in the workspace (including background)
     this.container.parentElement.addEventListener('mousedown', (e) => {
+      // Middle-click panning
       if (e.button === 1) {
         e.preventDefault();
         this.isPanning = true;
         this.startPanX = e.clientX - this.panX;
         this.startPanY = e.clientY - this.panY;
+        return;
+      }
+
+      // Left-click on background (outside the canvas container)
+      if (e.button === 0 && !e.altKey && !e.shiftKey && !e.ctrlKey) {
+        if (e.target === this.container.parentElement || !this.container.contains(e.target)) {
+          this.setSelectedBoxId(null);
+          if (this.callbacks.onSelectBox) {
+            this.callbacks.onSelectBox(null);
+          }
+          // Also initiate panning when dragging background
+          this.isPanning = true;
+          this.startPanX = e.clientX - this.panX;
+          this.startPanY = e.clientY - this.panY;
+        }
       }
     });
 
