@@ -1,4 +1,4 @@
-{
+export const preTrainedDb = {
   "samples": [
     {
       "features": {
@@ -1105,4 +1105,4 @@
       "timestamp": 1781142641765
     }
   ]
-}
+};

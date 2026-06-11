@@ -1,4 +1,4 @@
-import preTrainedDb from './pre_trained_db.json';
+import { preTrainedDb } from './pre_trained_db.js';
 
 export const AdaptiveLearner = {
   STORAGE_KEY: 'storysplitter_learner_v2',

@@ -3,7 +3,7 @@ import path from 'path';
 import { Jimp } from 'jimp';
 
 const DATASET_DIR = './storyboard_dataset_500';
-const OUTPUT_FILE = './js/pre_trained_db.json';
+const OUTPUT_FILE = './js/pre_trained_db.js';
 const ASPECT_RATIO = 16 / 9;
 
 // Extract features same as learner.js
@@ -613,12 +613,12 @@ async function main() {
 
   console.log(`Training complete! Collected ${samples.length} high-quality samples.`);
 
-  // Write pre-trained database JSON
+  // Write pre-trained database JS module
   const dbData = {
     samples: samples
   };
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(dbData, null, 2));
+  fs.writeFileSync(OUTPUT_FILE, `export const preTrainedDb = ${JSON.stringify(dbData, null, 2)};`);
   console.log(`Saved pre-trained database to ${OUTPUT_FILE}`);
 }
 
