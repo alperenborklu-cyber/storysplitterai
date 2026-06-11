@@ -328,6 +328,14 @@ function updateAutoSaveStatus(status) {
 // UI Event Handlers
 function bindUIEvents() {
   // Upload Card clicks & drops
+  const btnBrowse = dropCard.querySelector('.btn-primary');
+  if (btnBrowse) {
+    btnBrowse.addEventListener('click', (e) => {
+      e.stopPropagation();
+      fileInput.click();
+    });
+  }
+
   dropCard.addEventListener('click', (e) => {
     if (e.target === fileInput) return;
     fileInput.click();

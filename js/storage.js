@@ -9,28 +9,39 @@ let db = null;
 
 // Initialize IndexedDB
 export function initDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+  return new Promise((resolve) => {
+    if (typeof indexedDB === 'undefined') {
+      console.warn('IndexedDB is not supported. Running in-memory mode.');
+      resolve(null);
+      return;
+    }
 
-    request.onerror = (event) => {
-      console.error('Database failed to open:', event);
-      reject(event);
-    };
+    try {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
 
-    request.onsuccess = (event) => {
-      db = event.target.result;
-      resolve(db);
-    };
+      request.onerror = (event) => {
+        console.warn('Database failed to open. Running in-memory mode:', event);
+        resolve(null);
+      };
 
-    request.onupgradeneeded = (event) => {
-      const database = event.target.result;
-      if (!database.objectStoreNames.contains(STORE_PAGES)) {
-        database.createObjectStore(STORE_PAGES, { keyPath: 'id' });
-      }
-      if (!database.objectStoreNames.contains(STORE_STATE)) {
-        database.createObjectStore(STORE_STATE, { keyPath: 'key' });
-      }
-    };
+      request.onsuccess = (event) => {
+        db = event.target.result;
+        resolve(db);
+      };
+
+      request.onupgradeneeded = (event) => {
+        const database = event.target.result;
+        if (!database.objectStoreNames.contains(STORE_PAGES)) {
+          database.createObjectStore(STORE_PAGES, { keyPath: 'id' });
+        }
+        if (!database.objectStoreNames.contains(STORE_STATE)) {
+          database.createObjectStore(STORE_STATE, { keyPath: 'key' });
+        }
+      };
+    } catch (e) {
+      console.warn('IndexedDB is blocked or throws an error. Running in-memory mode:', e);
+      resolve(null);
+    }
   });
 }
 
