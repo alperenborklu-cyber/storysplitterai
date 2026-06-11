@@ -59,22 +59,134 @@
   <!-- Main Workspace Layout -->
   <div class="app-container">
 
-    <!-- Upload Screen Overlay -->
+    <!-- Upload Screen Overlay (Marketing Landing Page when no project loaded) -->
     <div class="upload-overlay" id="uploadOverlay">
-      <div class="upload-card" id="dropCard">
-        <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-        <h1>Upload Storyboard Sheets</h1>
-        <p>Drag & drop one or multiple storyboard images here, or click to browse</p>
-        <button class="btn btn-primary" type="button">Browse Files</button>
-        <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+      
+      <!-- Landing Header -->
+      <div class="landing-header">
+        <div class="logo">
+          <i class="fa-solid fa-scissors"></i>
+          <span>StorySplitter AI</span>
+        </div>
+        <div class="landing-nav">
+          <a href="blog.html" class="landing-nav-link"><i class="fa-solid fa-blog"></i> Blog & Tutorials</a>
+          <a href="https://github.com/alperenborklu-cyber/storysplitterai" target="_blank" class="landing-nav-link"><i class="fa-brands fa-github"></i> GitHub</a>
+        </div>
+      </div>
+
+      <!-- Mobile Screen Warning -->
+      <div class="mobile-warning-banner">
+        <i class="fa-solid fa-circle-info"></i>
+        <span><strong>Desktop Recommended:</strong> StorySplitter's interactive canvas is optimized for larger screens. Editing controls are best experienced on desktop.</span>
+      </div>
+
+      <!-- Hero Section -->
+      <div class="landing-hero">
+        <div class="hero-content">
+          <div class="badge-new">Version 1.0.4 Release</div>
+          <h1>Split AI Storyboards Into Clean Panels Instantly</h1>
+          <p class="hero-subtitle">
+            A professional web utility for AI filmmakers, directors, and designers. Automatically detect panel boundaries, lock frames to 16:9 or 9:16 aspect ratios, edit labels in-canvas, and batch export your storyboards in seconds.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-lg" id="btnTryDemo" type="button">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Try with Demo Storyboard
+            </button>
+            <button class="btn btn-secondary btn-lg" type="button" onclick="document.getElementById('projectFileInput').click()">
+              <i class="fa-solid fa-folder-open"></i> Resume Session (.storysplitter)
+            </button>
+          </div>
+        </div>
+
+        <div class="hero-upload-card">
+          <!-- Upload Card -->
+          <div class="upload-card" id="dropCard">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <h2>Upload Storyboard Sheets</h2>
+            <p>Drag & drop one or multiple storyboard images here, or click to browse</p>
+            <button class="btn btn-primary" type="button">Browse Files</button>
+            <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+          </div>
+        </div>
+      </div>
+
+      <!-- How it Works section -->
+      <div class="landing-section">
+        <h2 class="section-heading">How StorySplitter Simplifies Your Workflow</h2>
+        <div class="how-it-works-grid">
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <h3>Import Sheet</h3>
+            <p>Drag and drop your AI-generated sheets from Midjourney, Stable Diffusion, or pencil sketches into the browser.</p>
+          </div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <h3>Auto-Detect & Crop</h3>
+            <p>Run boundary auto-detection, adjust aspect locks (16:9 for film, 9:16 for shorts), or customize grid alignment.</p>
+          </div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <h3>Download named ZIP</h3>
+            <p>Name your sequence, optionally burn labels onto images, and export all cropped panels as high-resolution PNGs or JPEGs.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Grid Section -->
+      <div class="landing-section alt-bg">
+        <h2 class="section-heading">Key Features Designed for Filmmakers</h2>
+        <div class="features-landing-grid">
+          <div class="feature-card">
+            <i class="fa-solid fa-wand-magic-sparkles feature-icon"></i>
+            <h3>Adaptive AI Edge Detection</h3>
+            <p>Detect borders and drawings dynamically. Our smart computer vision model learns from your corrections to recommend optimal thresholds.</p>
+          </div>
+          <div class="feature-card">
+            <i class="fa-solid fa-arrows-spin feature-icon"></i>
+            <h3>Aspect Ratio Locking</h3>
+            <p>Instantly lock crops to standard cinema formats (16:9) or vertical smartphone formats (9:16). Or, resize panels freely.</p>
+          </div>
+          <div class="feature-card">
+            <i class="fa-solid fa-shield-halved feature-icon"></i>
+            <h3>100% Client-Side Privacy</h3>
+            <p>Your work is completely secure. No files are uploaded to any server; everything processes locally in your browser. Works offline.</p>
+          </div>
+          <div class="feature-card">
+            <i class="fa-solid fa-rotate-left feature-icon"></i>
+            <h3>Session Recovery & Undo</h3>
+            <p>Export entire work sessions as a <code>.storysplitter</code> bundle. Drag it back in to resume edits with full undo/redo stack recovery.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ Section -->
+      <div class="landing-section">
+        <h2 class="section-heading">Frequently Asked Questions</h2>
+        <div class="faq-container">
+          <div class="faq-item">
+            <h4>Does StorySplitter support multi-page sheets?</h4>
+            <p>Yes. You can upload multiple sheets at once. They will appear as a structured sequence in the sidebar where you can cycle through pages and add new ones anytime.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Can I rename individual panels?</h4>
+            <p>Absolutely. You can edit panel labels directly inside the canvas by double-clicking on the label badge, or modify them in the right-hand panel list.</p>
+          </div>
+          <div class="faq-item">
+            <h4>What image formats are supported?</h4>
+            <p>We accept WebP, PNG, JPEG, and TIFF sheets. Export outputs can be selected as lossless PNG or high-quality JPEG compression.</p>
+          </div>
+          <div class="faq-item">
+            <h4>Is it free to use?</h4>
+            <p>Yes! StorySplitter is a free open-source utility designed to speed up the pre-visualization workflow for creators worldwide.</p>
+          </div>
+        </div>
       </div>
       
-      <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center;">
-        <span style="font-size: 0.85rem; color: var(--text-muted);">Have a saved session?</span>
-        <button class="btn" onclick="document.getElementById('projectFileInput').click()">
-          <i class="fa-solid fa-folder-open"></i> Resume Session (.storysplitter)
-        </button>
+      <!-- Landing Footer -->
+      <div class="landing-footer">
+        <p>&copy; 2026 StorySplitter AI. All rights reserved. Serverless processing, secure & private.</p>
       </div>
+
     </div>
 
     <!-- Pages Sidebar (Left) -->
@@ -238,7 +350,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1rem; margin-bottom: 0.4rem;">
             <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Adaptive AI Tuning</span>
             <span class="ai-badge inactive" id="aiBadge">
-              <i class="fa-solid fa-brain"></i> <span id="aiBadgeText">No Data</span>
+              <i class="fa-solid fa-brain"></i> <span id="aiBadgeText">Awaiting Feedback</span>
             </span>
           </div>
           
@@ -278,6 +390,9 @@
             <button class="btn btn-primary" id="btnApplyAiSuggestion" style="width: 100%; margin-top: 0.6rem; display: none; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.45rem; font-size: 0.8rem; height: auto;">
               <i class="fa-solid fa-wand-magic-sparkles"></i> Apply AI Suggestions
             </button>
+            <div id="aiHelpText" style="font-size: 0.72rem; color: rgba(255,255,255,0.4); margin-top: 8px; line-height: 1.3; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+              Adaptive AI warms up and suggests custom tuning parameters after you approve/correct at least 3 panel detections!
+            </div>
           </div>
 
           <button class="btn btn-primary" id="btnDetectFrames" style="width: 100%; margin-top: 0.75rem;">

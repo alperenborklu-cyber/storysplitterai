@@ -396,6 +396,14 @@ function bindUIEvents() {
     }
   });
 
+  // Try Demo Storyboard Button
+  const btnTryDemo = document.getElementById('btnTryDemo');
+  if (btnTryDemo) {
+    btnTryDemo.addEventListener('click', () => {
+      loadDemoStoryboard();
+    });
+  }
+
   // Header Actions
   btnUploadNew.addEventListener('click', () => {
     if (confirm('Clear entire workspace and start new?')) {
@@ -799,6 +807,35 @@ async function handleBatchUpload(files) {
   }
 }
 
+// Load pre-bundled demo storyboard sheet and trigger auto-detection
+async function loadDemoStoryboard() {
+  try {
+    showToast('Loading demo storyboard...');
+    const response = await fetch('./storyboard-example.webp');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const blob = await response.blob();
+    const file = new File([blob], 'storyboard-demo.webp', { type: 'image/webp' });
+    await handleBatchUpload([file]);
+
+    // Poll canvas until the image loads, then run edge detection automatically
+    let checkCount = 0;
+    const interval = setInterval(() => {
+      if (sbCanvas && sbCanvas.img && sbCanvas.img.complete && sbCanvas.img.naturalWidth > 0) {
+        clearInterval(interval);
+        runAutoDetection();
+      }
+      checkCount++;
+      if (checkCount > 100) {
+        clearInterval(interval);
+      }
+    }, 50);
+
+  } catch (err) {
+    console.error('Failed to load demo storyboard:', err);
+    showToast('Failed to load demo storyboard.', 'error');
+  }
+}
+
 // Render Left Pages list
 function renderPagesList() {
   pagesList.innerHTML = '';
@@ -1040,14 +1077,23 @@ function updateAIPanel() {
   const count = AdaptiveLearner.getCount();
   const badge = document.getElementById('aiBadge');
   const badgeText = document.getElementById('aiBadgeText');
+  const helpText = document.getElementById('aiHelpText');
   document.getElementById('aiTrainCount').textContent = count + ' image' + (count !== 1 ? 's' : '');
 
   if (count >= 3) {
     badge.className = 'ai-badge active';
-    badgeText.textContent = count + ' Trained';
+    badgeText.textContent = 'Active';
+    if (helpText) {
+      helpText.innerHTML = 'Adaptive AI is active and automatically suggesting custom tuning parameters for your storyboard sheets!';
+      helpText.style.color = '#10b981';
+    }
   } else {
     badge.className = 'ai-badge inactive';
-    badgeText.textContent = count === 0 ? 'No Data' : count + ' Sample' + (count > 1 ? 's' : '');
+    badgeText.textContent = count === 0 ? 'Awaiting Feedback' : count + ' Sample' + (count > 1 ? 's' : '');
+    if (helpText) {
+      helpText.innerHTML = 'Adaptive AI warms up and suggests custom tuning parameters after you approve/correct at least 3 panel detections!';
+      helpText.style.color = 'rgba(255,255,255,0.4)';
+    }
   }
 
   if (currentImageFeatures && count > 0) {
