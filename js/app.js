@@ -811,10 +811,10 @@ async function handleBatchUpload(files) {
 async function loadDemoStoryboard() {
   try {
     showToast('Loading demo storyboard...');
-    const response = await fetch('./storyboard-example.webp');
+    const response = await fetch('./storyboard%20template.png');
     if (!response.ok) throw new Error('Network response was not ok');
     const blob = await response.blob();
-    const file = new File([blob], 'storyboard-demo.webp', { type: 'image/webp' });
+    const file = new File([blob], 'storyboard-demo.png', { type: 'image/png' });
     await handleBatchUpload([file]);
 
     // Poll canvas until the image loads, then run edge detection automatically
