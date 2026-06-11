@@ -1,7 +1,7 @@
-import { initDB, savePage, getAllPages, deletePage, clearAllPages, saveAppState, getAppState, exportProject, importProject, exportJSONLayout, importJSONLayout } from './storage.js?v=1.0.3';
-import { AdaptiveLearner } from './learner.js?v=1.0.3';
-import { runDetection, updateDetectionMask, generateGrid } from './detector.js?v=1.0.3';
-import { StoryboardCanvas } from './canvas.js?v=1.0.3';
+import { initDB, savePage, getAllPages, deletePage, clearAllPages, saveAppState, getAppState, exportProject, importProject, exportJSONLayout, importJSONLayout } from './storage.js?v=1.0.4';
+import { AdaptiveLearner } from './learner.js?v=1.0.4';
+import { runDetection, updateDetectionMask, generateGrid } from './detector.js?v=1.0.4';
+import { StoryboardCanvas } from './canvas.js?v=1.0.4';
 
 // Global app state
 let pages = [];
