@@ -328,7 +328,13 @@ function updateAutoSaveStatus(status) {
 // UI Event Handlers
 function bindUIEvents() {
   // Upload Card clicks & drops
-  dropCard.addEventListener('click', () => fileInput.click());
+  dropCard.addEventListener('click', (e) => {
+    if (e.target === fileInput) return;
+    fileInput.click();
+  });
+  fileInput.addEventListener('click', (e) => {
+    e.stopPropagation();
+  });
   
   dropCard.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -362,17 +368,19 @@ function bindUIEvents() {
 
   btnUndo.addEventListener('click', () => triggerUndo());
 
-  // Add Page Button in Pages Sidebar
   btnAddPage.addEventListener('click', () => {
     // Open file chooser to append new images
     const input = document.createElement('input');
     input.type = 'file';
     input.multiple = true;
     input.accept = 'image/*';
+    input.style.display = 'none';
+    document.body.appendChild(input);
     input.onchange = (e) => {
       if (e.target.files.length > 0) {
         handleBatchUpload(e.target.files);
       }
+      document.body.removeChild(input);
     };
     input.click();
   });
