@@ -163,12 +163,13 @@
             <label for="gridHeight">Cell Height <span class="value" id="valHeight">0px</span></label>
             <input type="range" id="gridHeight" min="28" max="562" value="180" disabled>
             <div id="heightDesc" style="font-size: 0.72rem; color: var(--text-dark); margin-top: 4px;">Height is locked to 16:9 ratio based on width</div>
-            <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.15); padding: 6px 10px; border-radius: 4px;">
-              <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 0;">
-                <input type="checkbox" id="lockAspectRatio" checked style="width: auto; height: auto; cursor: pointer;">
-                <span>Lock 16:9 Aspect Ratio</span>
-              </label>
-              <i class="fa-solid fa-lock" id="aspectLockIcon" style="color: var(--primary);"></i>
+            <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.15); padding: 6px 10px; border-radius: 4px; gap: 0.5rem;">
+              <label for="aspectRatioSelect" style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 0;">Aspect Lock</label>
+              <select id="aspectRatioSelect" style="width: auto; padding: 4px 6px; font-size: 0.78rem; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-main); cursor: pointer;">
+                <option value="16:9">Lock 16:9</option>
+                <option value="9:16">Lock 9:16</option>
+                <option value="free">Free Resize</option>
+              </select>
             </div>
           </div>
 

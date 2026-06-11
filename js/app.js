@@ -9,6 +9,7 @@ let activePageIndex = -1;
 let baseFileName = 'storyboard';
 let lastDetectionResult = null;
 let currentImageFeatures = null;
+let currentAspectRatio = 16 / 9;
 
 // Undo stack per page
 const undoStacks = new Map(); // pageId -> array of states
@@ -50,8 +51,7 @@ const togglePagesBtn = document.getElementById('togglePagesBtn');
 const toggleControlsBtn = document.getElementById('toggleControlsBtn');
 
 // Control Inputs
-const lockAspectRatio = document.getElementById('lockAspectRatio');
-const aspectLockIcon = document.getElementById('aspectLockIcon');
+const aspectRatioSelect = document.getElementById('aspectRatioSelect');
 const gridCols = document.getElementById('gridCols');
 const gridRows = document.getElementById('gridRows');
 const gridWidth = document.getElementById('gridWidth');
@@ -245,13 +245,50 @@ function loadActivePage() {
   };
 }
 
+function updateAspectRatioValue() {
+  const val = aspectRatioSelect.value;
+  const heightDesc = document.getElementById('heightDesc');
+  
+  if (val === '16:9') {
+    currentAspectRatio = 16 / 9;
+    sbCanvas.lockAspectRatio = true;
+    sbCanvas.aspectRatioValue = 16 / 9;
+    gridHeight.disabled = true;
+    if (heightDesc) heightDesc.textContent = "Height is locked to 16:9 ratio based on width";
+    updateGridHeightFromWidth();
+  } else if (val === '9:16') {
+    currentAspectRatio = 9 / 16;
+    sbCanvas.lockAspectRatio = true;
+    sbCanvas.aspectRatioValue = 9 / 16;
+    gridHeight.disabled = true;
+    if (heightDesc) heightDesc.textContent = "Height is locked to 9:16 ratio based on width";
+    updateGridHeightFromWidth();
+  } else {
+    currentAspectRatio = 16 / 9; // fallback
+    sbCanvas.lockAspectRatio = false;
+    gridHeight.disabled = false;
+    if (heightDesc) heightDesc.textContent = "Height can be adjusted manually";
+  }
+}
+
 function applySettingsToUI(s) {
   if (!s) return;
   gridCols.value = s.gridCols || 4;
   gridRows.value = s.gridRows || 3;
   gridWidth.value = s.gridWidth || 320;
   gridHeight.value = s.gridHeight || 180;
-  lockAspectRatio.checked = s.lockAspectRatio !== undefined ? s.lockAspectRatio : true;
+  
+  if (s.aspectRatio) {
+    aspectRatioSelect.value = s.aspectRatio;
+  } else {
+    // legacy support
+    if (s.lockAspectRatio === false) {
+      aspectRatioSelect.value = 'free';
+    } else {
+      aspectRatioSelect.value = '16:9';
+    }
+  }
+  
   gapX.value = s.gapX || 10;
   gapY.value = s.gapY || 10;
   offsetX.value = s.offsetX || 20;
@@ -264,15 +301,7 @@ function applySettingsToUI(s) {
   valMinSize.textContent = detectMinSize.value + 'px';
   trimTextBoxes.checked = s.trimTextBoxes !== undefined ? s.trimTextBoxes : false;
   
-  if (lockAspectRatio.checked) {
-    aspectLockIcon.className = "fa-solid fa-lock";
-    aspectLockIcon.style.color = "var(--primary)";
-    gridHeight.disabled = true;
-  } else {
-    aspectLockIcon.className = "fa-solid fa-lock-open";
-    aspectLockIcon.style.color = "var(--text-dark)";
-    gridHeight.disabled = false;
-  }
+  updateAspectRatioValue();
 }
 
 // Capture current UI controls settings
@@ -282,7 +311,7 @@ function getSettingsFromUI() {
     gridRows: parseInt(gridRows.value),
     gridWidth: parseInt(gridWidth.value),
     gridHeight: parseInt(gridHeight.value),
-    lockAspectRatio: lockAspectRatio.checked,
+    aspectRatio: aspectRatioSelect.value,
     gapX: parseInt(gapX.value),
     gapY: parseInt(gapY.value),
     offsetX: parseInt(offsetX.value),
@@ -443,7 +472,7 @@ function bindUIEvents() {
   const gridInputs = [gridCols, gridRows, gridWidth, gridHeight, gapX, gapY, offsetX, offsetY];
   gridInputs.forEach(input => {
     input.addEventListener('input', () => {
-      if (input === gridWidth && lockAspectRatio.checked) {
+      if (input === gridWidth && aspectRatioSelect.value !== 'free') {
         updateGridHeightFromWidth();
       }
       updateGridSlidersLabels();
@@ -455,20 +484,9 @@ function bindUIEvents() {
     });
   });
 
-  // Aspect ratio checkbox toggle
-  lockAspectRatio.addEventListener('change', () => {
-    const locked = lockAspectRatio.checked;
-    sbCanvas.lockAspectRatio = locked;
-    if (locked) {
-      aspectLockIcon.className = "fa-solid fa-lock";
-      aspectLockIcon.style.color = "var(--primary)";
-      gridHeight.disabled = true;
-      updateGridHeightFromWidth();
-    } else {
-      aspectLockIcon.className = "fa-solid fa-lock-open";
-      aspectLockIcon.style.color = "var(--text-dark)";
-      gridHeight.disabled = false;
-    }
+  // Aspect ratio select change
+  aspectRatioSelect.addEventListener('change', () => {
+    updateAspectRatioValue();
     generateAutoGrid();
     recordUndoState();
     saveCurrentPageState();
@@ -585,7 +603,7 @@ function bindUIEvents() {
     if (!page) return;
 
     const w = 320;
-    const h = Math.round(w / ASPECT_RATIO);
+    const h = Math.round(w / currentAspectRatio);
     const x = Math.max(20, Math.floor((sbCanvas.img.width - w) / 2));
     const y = Math.max(20, Math.floor((sbCanvas.img.height - h) / 2));
 
@@ -921,7 +939,7 @@ async function clearWorkspace() {
 // Grid Generator Binding
 function updateGridHeightFromWidth() {
   const w = parseInt(gridWidth.value);
-  const h = Math.round(w / ASPECT_RATIO);
+  const h = Math.round(w / currentAspectRatio);
   gridHeight.value = h;
   valWidth.textContent = w + 'px';
   valHeight.textContent = h + 'px';
@@ -955,6 +973,7 @@ function generateAutoGrid() {
   sbCanvas.setSelectedBoxId(null);
   saveCurrentPageState();
   renderPreviews();
+  sbCanvas.draw(); // FIX: Redraw canvas immediately on grid change
 }
 
 // Auto Detect Mask Debug drawing
@@ -986,7 +1005,8 @@ function runAutoDetection() {
       detectMode.value,
       detectSensitivity.value,
       detectMinSize.value,
-      trimTextBoxes.checked
+      trimTextBoxes.checked,
+      currentAspectRatio
     );
 
     if (result && result.boxes.length > 0) {

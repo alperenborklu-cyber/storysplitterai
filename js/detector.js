@@ -1,4 +1,4 @@
-const ASPECT_RATIO = 16 / 9;
+// ASPECT_RATIO is dynamic property passed to runDetection
 
 export function getOtsuThreshold(grayData) {
   const histogram = new Int32Array(256);
@@ -426,7 +426,7 @@ export function generateGrid(cols, rows, width, height, gapX, gapY, offsetX, off
   return cropBoxes;
 }
 
-export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes) {
+export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, aspectRatioValue = 16 / 9) {
   if (!img || !img.src || img.width === 0) return [];
 
   let finalBoxes = [];
@@ -483,7 +483,7 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes) {
           const boxW = maxBoxX - minBoxX;
           const boxH = maxBoxY - minBoxY;
 
-          if (boxW >= minSz && boxH >= (minSz / ASPECT_RATIO)) {
+          if (boxW >= minSz && boxH >= (minSz / aspectRatioValue)) {
             const pad = R + 1;
             const x1 = Math.max(0, minBoxX - pad);
             const y1 = Math.max(0, minBoxY - pad);
@@ -553,7 +553,7 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes) {
           const boxW = maxBoxX - minBoxX;
           const boxH = maxBoxY - minBoxY;
 
-          if (boxW >= minSz && boxH >= (minSz / ASPECT_RATIO)) {
+          if (boxW >= minSz && boxH >= (minSz / aspectRatioValue)) {
             detectedBoxes.push({
               x: minBoxX / scale,
               y: minBoxY / scale,

@@ -1,4 +1,4 @@
-const ASPECT_RATIO = 16 / 9;
+// Dynamic aspect ratio property is used on StoryboardCanvas instance
 const HANDLE_SIZE = 8;
 
 export class StoryboardCanvas {
@@ -15,6 +15,7 @@ export class StoryboardCanvas {
     this.showDetectMask = false;
     this.detectionMaskCanvas = null;
     this.lockAspectRatio = true;
+    this.aspectRatioValue = 16 / 9;
     
     this.zoomLevel = 1.0;
     this.panX = 0;
@@ -363,30 +364,30 @@ export class StoryboardCanvas {
 
         if (handle === 'se') {
           newW = Math.max(50, this.boxStartPos.w + dx);
-          newW = Math.min(newW, this.img.width - this.boxStartPos.x, (this.img.height - this.boxStartPos.y) * ASPECT_RATIO);
-          newH = newW / ASPECT_RATIO;
+          newW = Math.min(newW, this.img.width - this.boxStartPos.x, (this.img.height - this.boxStartPos.y) * this.aspectRatioValue);
+          newH = newW / this.aspectRatioValue;
           this.activeBox.w = newW;
           this.activeBox.h = newH;
         } else if (handle === 'ne') {
           newW = Math.max(50, this.boxStartPos.w + dx);
-          newW = Math.min(newW, this.img.width - this.boxStartPos.x, (this.boxStartPos.y + this.boxStartPos.h) * ASPECT_RATIO);
-          newH = newW / ASPECT_RATIO;
+          newW = Math.min(newW, this.img.width - this.boxStartPos.x, (this.boxStartPos.y + this.boxStartPos.h) * this.aspectRatioValue);
+          newH = newW / this.aspectRatioValue;
           newY = this.boxStartPos.y + this.boxStartPos.h - newH;
           this.activeBox.w = newW;
           this.activeBox.h = newH;
           this.activeBox.y = newY;
         } else if (handle === 'sw') {
           newW = Math.max(50, this.boxStartPos.w - dx);
-          newW = Math.min(newW, this.boxStartPos.x + this.boxStartPos.w, (this.img.height - this.boxStartPos.y) * ASPECT_RATIO);
-          newH = newW / ASPECT_RATIO;
+          newW = Math.min(newW, this.boxStartPos.x + this.boxStartPos.w, (this.img.height - this.boxStartPos.y) * this.aspectRatioValue);
+          newH = newW / this.aspectRatioValue;
           newX = this.boxStartPos.x + this.boxStartPos.w - newW;
           this.activeBox.w = newW;
           this.activeBox.h = newH;
           this.activeBox.x = newX;
         } else if (handle === 'nw') {
           newW = Math.max(50, this.boxStartPos.w - dx);
-          newW = Math.min(newW, this.boxStartPos.x + this.boxStartPos.w, (this.boxStartPos.y + this.boxStartPos.h) * ASPECT_RATIO);
-          newH = newW / ASPECT_RATIO;
+          newW = Math.min(newW, this.boxStartPos.x + this.boxStartPos.w, (this.boxStartPos.y + this.boxStartPos.h) * this.aspectRatioValue);
+          newH = newW / this.aspectRatioValue;
           newX = this.boxStartPos.x + this.boxStartPos.w - newW;
           newY = this.boxStartPos.y + this.boxStartPos.h - newH;
           this.activeBox.w = newW;
