@@ -74,6 +74,7 @@ header {
   background: linear-gradient(135deg, #a5b4fc, #6366f1, #818cf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  cursor: pointer;
 }
 
 .logo i {

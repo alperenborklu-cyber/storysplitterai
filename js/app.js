@@ -230,6 +230,16 @@ function showUploadOverlay() {
   sidebar.style.display = 'none';
   pagesSidebar.style.display = 'none';
   zoomOverlay.style.display = 'none';
+
+  // Toggle Return to Workspace button based on whether pages are loaded
+  const btnReturn = document.getElementById('btnReturnToWorkspace');
+  if (btnReturn) {
+    if (pages && pages.length > 0) {
+      btnReturn.style.display = 'inline-flex';
+    } else {
+      btnReturn.style.display = 'none';
+    }
+  }
 }
 
 function setupWorkspace() {
@@ -442,6 +452,22 @@ function bindUIEvents() {
   if (btnTryDemo) {
     btnTryDemo.addEventListener('click', () => {
       loadDemoStoryboard();
+    });
+  }
+
+  // App Logo Click Handler (Go back to home page without clearing session)
+  const appLogo = document.getElementById('appLogo');
+  if (appLogo) {
+    appLogo.addEventListener('click', () => {
+      showUploadOverlay();
+    });
+  }
+
+  // Return to Workspace Button Click Handler
+  const btnReturnToWorkspace = document.getElementById('btnReturnToWorkspace');
+  if (btnReturnToWorkspace) {
+    btnReturnToWorkspace.addEventListener('click', () => {
+      setupWorkspace();
     });
   }
 
