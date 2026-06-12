@@ -1156,7 +1156,7 @@ function updateAIPanel() {
       const pct = Math.round(suggestion.confidence * 100);
       document.getElementById('aiMatchQuality').textContent = pct + '%';
       document.getElementById('aiSuggestedSens').textContent = suggestion.suggestedSens + '%';
-      const modeNames = { auto: 'Auto', enclosed: 'Enclosed', drawings: 'Drawings' };
+      const modeNames = { auto: 'Auto', grid: 'Grid (Structured)', enclosed: 'Enclosed', drawings: 'Drawings' };
       document.getElementById('aiSuggestedMode').textContent = modeNames[suggestion.suggestedMode] || 'Auto';
       document.getElementById('aiConfBar').style.width = pct + '%';
       if (btnApplyAiSuggestion) {

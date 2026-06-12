@@ -128,8 +128,197 @@ function mergeOverlappingBoxes(boxes, threshold) {
   return boxes;
 }
 
+function detectGridNode(jimpImg, sensitivity, minSize) {
+  const imgWidth = jimpImg.bitmap.width;
+  const imgHeight = jimpImg.bitmap.height;
+  
+  const procWidth = 600;
+  const scale = procWidth / imgWidth;
+  const procHeight = Math.round(imgHeight * scale);
+
+  const resized = jimpImg.clone().resize({ w: procWidth, h: procHeight });
+  const data = resized.bitmap.data;
+
+  const gray = new Uint8Array(procWidth * procHeight);
+  for (let i = 0; i < data.length; i += 4) {
+    gray[i / 4] = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+  }
+
+  let edgeLumSum = 0, edgeSampleCount = 0;
+  const edgeThickness = 3;
+  for (let x = 0; x < procWidth; x++) {
+    for (let t = 0; t < edgeThickness; t++) {
+      edgeLumSum += gray[t * procWidth + x];
+      edgeLumSum += gray[(procHeight - 1 - t) * procWidth + x];
+      edgeSampleCount += 2;
+    }
+  }
+  for (let y = edgeThickness; y < procHeight - edgeThickness; y++) {
+    for (let t = 0; t < edgeThickness; t++) {
+      edgeLumSum += gray[y * procWidth + t];
+      edgeLumSum += gray[y * procWidth + (procWidth - 1 - t)];
+      edgeSampleCount += 2;
+    }
+  }
+  const meanEdgeLum = edgeLumSum / edgeSampleCount;
+  const isDarkBackground = meanEdgeLum < 60;
+  const sens = parseInt(sensitivity);
+
+  const bgLimit = Math.max(220, Math.min(254, 210 + (sens - 50) * 1.1));
+  const bgLimit_dark = Math.max(15, Math.min(90, 75 - (sens - 50) * 1.2));
+
+  const isNonBg = (val) => isDarkBackground ? (val > bgLimit_dark) : (val < bgLimit);
+
+  const rowActiveCount = new Int32Array(procHeight);
+  for (let y = 0; y < procHeight; y++) {
+    let active = 0;
+    for (let x = 0; x < procWidth; x++) {
+      if (isNonBg(gray[y * procWidth + x])) active++;
+    }
+    rowActiveCount[y] = active;
+  }
+
+  const rowThresh = procWidth * 0.03;
+  const rowSegments = [];
+  let inRow = false;
+  let rowStart = 0;
+  for (let y = 0; y < procHeight; y++) {
+    if (rowActiveCount[y] > rowThresh) {
+      if (!inRow) {
+        rowStart = y;
+        inRow = true;
+      }
+    } else {
+      if (inRow) {
+        rowSegments.push({ start: rowStart, end: y - 1 });
+        inRow = false;
+      }
+    }
+  }
+  if (inRow) rowSegments.push({ start: rowStart, end: procHeight - 1 });
+
+  const minRowHeight = Math.max(25, Math.floor(parseInt(minSize) * scale * 0.5));
+  const filteredRows = rowSegments.filter(r => (r.end - r.start) >= minRowHeight);
+
+  const detectedBoxes = [];
+
+  for (const row of filteredRows) {
+    const rowH = row.end - row.start + 1;
+    
+    const colGutterScore = new Float32Array(procWidth);
+    for (let x = 0; x < procWidth; x++) {
+      let bgPixels = 0;
+      for (let y = row.start; y <= row.end; y++) {
+        if (!isNonBg(gray[y * procWidth + x])) bgPixels++;
+      }
+      colGutterScore[x] = bgPixels / rowH;
+    }
+
+    const colActive = new Uint8Array(procWidth);
+    for (let x = 0; x < procWidth; x++) {
+      colActive[x] = (colGutterScore[x] < 0.90) ? 1 : 0;
+    }
+
+    let colSegments = [];
+    let inCol = false;
+    let colStart = 0;
+    for (let x = 0; x < procWidth; x++) {
+      if (colActive[x] === 1) {
+        if (!inCol) {
+          colStart = x;
+          inCol = true;
+        }
+      } else {
+        if (inCol) {
+          colSegments.push({ start: colStart, end: x - 1 });
+          inCol = false;
+        }
+      }
+    }
+    if (inCol) colSegments.push({ start: colStart, end: procWidth - 1 });
+
+    const minColWidth = Math.max(15, Math.floor(parseInt(minSize) * scale * 0.3));
+    let filteredCols = colSegments.filter(c => (c.end - c.start) >= minColWidth);
+
+    if (filteredCols.length > 0) {
+      const trueWCols = filteredCols.filter(c => (c.end - c.start + 1) >= Math.max(30, minColWidth * 2));
+      const widths = trueWCols.map(c => c.end - c.start + 1);
+      
+      if (widths.length > 0) {
+        widths.sort((a, b) => a - b);
+        const medianW = widths[Math.floor(widths.length / 2)];
+
+        let merged = true;
+        while (merged) {
+          merged = false;
+          for (let i = 0; i < filteredCols.length - 1; i++) {
+            const gap = filteredCols[i+1].start - filteredCols[i].end - 1;
+            if (gap <= Math.max(3, medianW * 0.08)) {
+              filteredCols[i].end = filteredCols[i+1].end;
+              filteredCols.splice(i + 1, 1);
+              merged = true;
+              break;
+            }
+          }
+        }
+
+        const finalCols = [];
+        for (const col of filteredCols) {
+          const colW = col.end - col.start + 1;
+          if (colW < medianW * 0.4) {
+            continue;
+          }
+          
+          if (colW > medianW * 1.4) {
+            const numPanels = Math.max(2, Math.round(colW / medianW));
+            let currentStart = col.start;
+            const step = colW / numPanels;
+            
+            for (let p = 1; p < numPanels; p++) {
+              const expectedSplitIdx = Math.round(col.start + p * step);
+              const searchWin = Math.max(5, Math.round(medianW * 0.15));
+              let bestSplitX = expectedSplitIdx;
+              let maxScore = -1;
+              
+              for (let x = expectedSplitIdx - searchWin; x <= expectedSplitIdx + searchWin; x++) {
+                if (x >= col.start && x <= col.end) {
+                  if (colGutterScore[x] > maxScore) {
+                    maxScore = colGutterScore[x];
+                    bestSplitX = x;
+                  }
+                }
+              }
+              
+              finalCols.push({ start: currentStart, end: bestSplitX - 1 });
+              currentStart = bestSplitX;
+            }
+            finalCols.push({ start: currentStart, end: col.end });
+          } else {
+            finalCols.push(col);
+          }
+        }
+        filteredCols = finalCols;
+      }
+    }
+
+    for (const col of filteredCols) {
+      detectedBoxes.push({
+        x: col.start / scale,
+        y: row.start / scale,
+        w: (col.end - col.start + 1) / scale,
+        h: rowH / scale
+      });
+    }
+  }
+
+  return detectedBoxes;
+}
+
 // Run CV edge/enclosure detection
 function runDetectionNode(jimpImg, mode, sensitivity, minSize) {
+  if (mode === 'grid') {
+    return detectGridNode(jimpImg, sensitivity, minSize);
+  }
   const imgWidth = jimpImg.bitmap.width;
   const imgHeight = jimpImg.bitmap.height;
   
@@ -521,9 +710,9 @@ async function trainOnImage(filePath) {
     const features = extractFeatures(jimpImg);
 
     // Grid search parameters
-    const modes = ['enclosed', 'drawings'];
-    const sensitivities = [80, 88, 94];
-    const minSizes = [80, 130];
+    const modes = ['enclosed', 'drawings', 'grid'];
+    const sensitivities = [80, 85, 90, 94];
+    const minSizes = [80, 100, 130];
 
     let bestScore = -99999;
     let bestParams = { mode: 'enclosed', sensitivity: 88, minSize: 80, panelCount: 0 };
@@ -567,6 +756,7 @@ async function trainOnImage(filePath) {
 
 async function main() {
   const datasetDirs = [
+    './aistoryboards',
     './storyboard_dataset_500',
     './storyboard_dataset',
     './MANGA/train/images',
