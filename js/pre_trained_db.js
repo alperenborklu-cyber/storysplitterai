@@ -2,6 +2,22 @@ export const preTrainedDb = {
   "samples": [
     {
       "features": {
+        "meanGray": 0.23973451327435863,
+        "stdGray": 0.20788424355949545,
+        "darkRatio": 0.42920353982300885,
+        "brightRatio": 0,
+        "edgeDensity": 0.06013586398470988,
+        "aspectRatio": 1.7777777777777777
+      },
+      "sensitivity": 80,
+      "minSize": 80,
+      "mode": "enclosed",
+      "panelCount": 12,
+      "positive": true,
+      "timestamp": 1781223635216
+    },
+    {
+      "features": {
         "meanGray": 0.6165251491901109,
         "stdGray": 0.28588921324956396,
         "darkRatio": 0.16241545893719805,
@@ -14,7 +30,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 8,
       "positive": true,
-      "timestamp": 1781142445014
+      "timestamp": 1781223643606
     },
     {
       "features": {
@@ -30,7 +46,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142451623
+      "timestamp": 1781223653232
     },
     {
       "features": {
@@ -46,7 +62,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142452644
+      "timestamp": 1781223654611
     },
     {
       "features": {
@@ -62,7 +78,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142453475
+      "timestamp": 1781223655801
     },
     {
       "features": {
@@ -78,7 +94,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142454273
+      "timestamp": 1781223656904
     },
     {
       "features": {
@@ -94,7 +110,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 5,
       "positive": true,
-      "timestamp": 1781142460336
+      "timestamp": 1781223665041
     },
     {
       "features": {
@@ -110,7 +126,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142469698
+      "timestamp": 1781223678376
     },
     {
       "features": {
@@ -126,7 +142,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142474281
+      "timestamp": 1781223684699
     },
     {
       "features": {
@@ -142,7 +158,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142478878
+      "timestamp": 1781223690699
     },
     {
       "features": {
@@ -158,7 +174,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142483505
+      "timestamp": 1781223696671
     },
     {
       "features": {
@@ -174,7 +190,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 6,
       "positive": true,
-      "timestamp": 1781142490647
+      "timestamp": 1781223706159
     },
     {
       "features": {
@@ -190,7 +206,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142495685
+      "timestamp": 1781223711486
     },
     {
       "features": {
@@ -206,7 +222,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142530319
+      "timestamp": 1781223743199
     },
     {
       "features": {
@@ -222,7 +238,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 6,
       "positive": true,
-      "timestamp": 1781142541995
+      "timestamp": 1781223754318
     },
     {
       "features": {
@@ -238,7 +254,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 7,
       "positive": true,
-      "timestamp": 1781142546329
+      "timestamp": 1781223758044
     },
     {
       "features": {
@@ -254,7 +270,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142547364
+      "timestamp": 1781223759066
     },
     {
       "features": {
@@ -270,7 +286,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142548500
+      "timestamp": 1781223760065
     },
     {
       "features": {
@@ -286,7 +302,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142551447
+      "timestamp": 1781223762960
     },
     {
       "features": {
@@ -302,7 +318,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142552570
+      "timestamp": 1781223764068
     },
     {
       "features": {
@@ -318,7 +334,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 5,
       "positive": true,
-      "timestamp": 1781142553722
+      "timestamp": 1781223765218
     },
     {
       "features": {
@@ -334,7 +350,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142554902
+      "timestamp": 1781223766317
     },
     {
       "features": {
@@ -350,7 +366,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142557199
+      "timestamp": 1781223768781
     },
     {
       "features": {
@@ -366,7 +382,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142558303
+      "timestamp": 1781223770117
     },
     {
       "features": {
@@ -382,7 +398,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142559454
+      "timestamp": 1781223771283
     },
     {
       "features": {
@@ -398,7 +414,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142560500
+      "timestamp": 1781223772703
     },
     {
       "features": {
@@ -414,7 +430,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142561642
+      "timestamp": 1781223773627
     },
     {
       "features": {
@@ -430,7 +446,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142562611
+      "timestamp": 1781223774690
     },
     {
       "features": {
@@ -446,7 +462,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142563663
+      "timestamp": 1781223775612
     },
     {
       "features": {
@@ -462,7 +478,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142565885
+      "timestamp": 1781223778305
     },
     {
       "features": {
@@ -478,7 +494,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142596657
+      "timestamp": 1781223813756
     },
     {
       "features": {
@@ -494,7 +510,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142597671
+      "timestamp": 1781223814847
     },
     {
       "features": {
@@ -510,7 +526,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142599446
+      "timestamp": 1781223816809
     },
     {
       "features": {
@@ -526,7 +542,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142600334
+      "timestamp": 1781223817788
     },
     {
       "features": {
@@ -542,7 +558,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142602074
+      "timestamp": 1781223819610
     },
     {
       "features": {
@@ -558,7 +574,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142604027
+      "timestamp": 1781223821464
     },
     {
       "features": {
@@ -574,7 +590,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142604917
+      "timestamp": 1781223822345
     },
     {
       "features": {
@@ -590,7 +606,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142605757
+      "timestamp": 1781223823219
     },
     {
       "features": {
@@ -606,7 +622,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142606707
+      "timestamp": 1781223824063
     },
     {
       "features": {
@@ -622,7 +638,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142607598
+      "timestamp": 1781223824934
     },
     {
       "features": {
@@ -638,7 +654,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 6,
       "positive": true,
-      "timestamp": 1781142609459
+      "timestamp": 1781223826712
     },
     {
       "features": {
@@ -654,7 +670,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 10,
       "positive": true,
-      "timestamp": 1781142611211
+      "timestamp": 1781223828553
     },
     {
       "features": {
@@ -670,7 +686,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 6,
       "positive": true,
-      "timestamp": 1781142612338
+      "timestamp": 1781223829481
     },
     {
       "features": {
@@ -686,7 +702,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142613275
+      "timestamp": 1781223830340
     },
     {
       "features": {
@@ -702,7 +718,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142614266
+      "timestamp": 1781223831205
     },
     {
       "features": {
@@ -718,7 +734,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142615189
+      "timestamp": 1781223832090
     },
     {
       "features": {
@@ -734,7 +750,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142617159
+      "timestamp": 1781223833957
     },
     {
       "features": {
@@ -750,7 +766,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142618978
+      "timestamp": 1781223835757
     },
     {
       "features": {
@@ -766,7 +782,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142619857
+      "timestamp": 1781223836614
     },
     {
       "features": {
@@ -782,7 +798,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142620765
+      "timestamp": 1781223837504
     },
     {
       "features": {
@@ -798,7 +814,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142622658
+      "timestamp": 1781223839359
     },
     {
       "features": {
@@ -814,7 +830,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142624417
+      "timestamp": 1781223841153
     },
     {
       "features": {
@@ -830,7 +846,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142625292
+      "timestamp": 1781223842006
     },
     {
       "features": {
@@ -846,7 +862,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142626264
+      "timestamp": 1781223842878
     },
     {
       "features": {
@@ -862,7 +878,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142627149
+      "timestamp": 1781223843767
     },
     {
       "features": {
@@ -878,7 +894,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142628055
+      "timestamp": 1781223844646
     },
     {
       "features": {
@@ -894,7 +910,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142629051
+      "timestamp": 1781223845486
     },
     {
       "features": {
@@ -910,7 +926,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142629927
+      "timestamp": 1781223846332
     },
     {
       "features": {
@@ -926,7 +942,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 4,
       "positive": true,
-      "timestamp": 1781142630808
+      "timestamp": 1781223847232
     },
     {
       "features": {
@@ -942,7 +958,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142632656
+      "timestamp": 1781223848997
     },
     {
       "features": {
@@ -958,7 +974,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142633490
+      "timestamp": 1781223849867
     },
     {
       "features": {
@@ -974,7 +990,7 @@ export const preTrainedDb = {
       "mode": "enclosed",
       "panelCount": 6,
       "positive": true,
-      "timestamp": 1781142634564
+      "timestamp": 1781223850697
     },
     {
       "features": {
@@ -990,7 +1006,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142635462
+      "timestamp": 1781223851558
     },
     {
       "features": {
@@ -1006,7 +1022,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142636458
+      "timestamp": 1781223852461
     },
     {
       "features": {
@@ -1022,7 +1038,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142637348
+      "timestamp": 1781223853359
     },
     {
       "features": {
@@ -1038,7 +1054,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142638192
+      "timestamp": 1781223854295
     },
     {
       "features": {
@@ -1054,7 +1070,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142639081
+      "timestamp": 1781223855163
     },
     {
       "features": {
@@ -1070,7 +1086,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142640026
+      "timestamp": 1781223856004
     },
     {
       "features": {
@@ -1086,7 +1102,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 3,
       "positive": true,
-      "timestamp": 1781142640930
+      "timestamp": 1781223856870
     },
     {
       "features": {
@@ -1102,7 +1118,7 @@ export const preTrainedDb = {
       "mode": "drawings",
       "panelCount": 2,
       "positive": true,
-      "timestamp": 1781142641765
+      "timestamp": 1781223857697
     }
   ]
 };

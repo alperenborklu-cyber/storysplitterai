@@ -454,7 +454,8 @@ function runDetectionNode(jimpImg, mode, sensitivity, minSize) {
 
         if (boxW >= minSz && boxH >= (minSz / ASPECT_RATIO)) {
           if (mode === 'enclosed') {
-            const pad = R + 1;
+            const R_close = Math.max(4, Math.round(procWidth * 0.004));
+            const pad = isDarkBackground ? -R_close : (R + 1);
             const x1 = Math.max(0, minBoxX - pad);
             const y1 = Math.max(0, minBoxY - pad);
             const x2 = Math.min(procWidth, maxBoxX + pad + 1);
@@ -574,6 +575,11 @@ async function main() {
   ];
 
   const allFiles = [];
+
+  if (fs.existsSync('./storyboardtemplatestorysplitter.png')) {
+    allFiles.push('./storyboardtemplatestorysplitter.png');
+    console.log('Explicitly added ./storyboardtemplatestorysplitter.png to training list.');
+  }
 
   for (const dir of datasetDirs) {
     if (!fs.existsSync(dir)) {

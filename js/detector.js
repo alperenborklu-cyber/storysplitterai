@@ -436,7 +436,7 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
   function detectEnclosed() {
     const result = updateDetectionMask(img, 'enclosed', sensitivity, minSize);
     if (!result) return [];
-    const { panelInteriors, scale, procWidth, procHeight } = result;
+    const { panelInteriors, scale, procWidth, procHeight, isDarkBackground } = result;
     const componentVisited = new Uint8Array(procWidth * procHeight);
     const detectedBoxes = [];
     const minSz = parseInt(minSize);
@@ -484,7 +484,8 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
           const boxH = maxBoxY - minBoxY;
 
           if (boxW >= minSz && boxH >= (minSz / aspectRatioValue)) {
-            const pad = R + 1;
+            const R_close = Math.max(4, Math.round(procWidth * 0.004));
+            const pad = isDarkBackground ? -R_close : (R + 1);
             const x1 = Math.max(0, minBoxX - pad);
             const y1 = Math.max(0, minBoxY - pad);
             const x2 = Math.min(procWidth, maxBoxX + pad + 1);
