@@ -811,7 +811,7 @@ async function handleBatchUpload(files) {
 async function loadDemoStoryboard() {
   try {
     showToast('Loading demo storyboard...');
-    const response = await fetch('./storyboard%20template.png');
+    const response = await fetch('./storyboardtemplatestorysplitter.png');
     if (!response.ok) throw new Error('Network response was not ok');
     const blob = await response.blob();
     const file = new File([blob], 'storyboard-demo.png', { type: 'image/png' });
