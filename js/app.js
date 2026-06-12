@@ -87,6 +87,9 @@ const detectMinSize = document.getElementById('detectMinSize');
 const valMinSize = document.getElementById('valMinSize');
 const showDetectMask = document.getElementById('showDetectMask');
 const trimTextBoxes = document.getElementById('trimTextBoxes');
+const frameResize = document.getElementById('frameResize');
+const valFrameResize = document.getElementById('valFrameResize');
+let lastAutoDetectedBoxes = null;
 const btnDetectFrames = document.getElementById('btnDetectFrames');
 const btnConfirmDetection = document.getElementById('btnConfirmDetection');
 const btnConfirmBad = document.getElementById('btnConfirmBad');
@@ -113,6 +116,11 @@ async function init() {
         return maxId + 1;
       },
       onBoxesChanged: () => {
+        if (frameResize && frameResize.value != 0) {
+          frameResize.value = 0;
+          valFrameResize.textContent = '0px';
+        }
+        lastAutoDetectedBoxes = JSON.parse(JSON.stringify(sbCanvas.cropBoxes || []));
         saveCurrentPageState();
         renderPreviews();
       },
@@ -172,6 +180,39 @@ async function init() {
 }
 
 // Helper to get active page
+function setCropBoxesAndSync(boxes, resetSlider = true) {
+  sbCanvas.setCropBoxes(boxes);
+  if (resetSlider) {
+    if (frameResize) {
+      frameResize.value = 0;
+      valFrameResize.textContent = '0px';
+    }
+    lastAutoDetectedBoxes = JSON.parse(JSON.stringify(boxes || []));
+  }
+}
+
+function applyFrameResize() {
+  if (!lastAutoDetectedBoxes || lastAutoDetectedBoxes.length === 0) return;
+  const offset = parseInt(frameResize.value) || 0;
+  
+  const resizedBoxes = lastAutoDetectedBoxes.map(box => {
+    const cx = box.x + box.w / 2;
+    const cy = box.y + box.h / 2;
+    const newW = Math.max(10, box.w + 2 * offset);
+    const newH = Math.max(10, box.h + 2 * offset);
+    return {
+      ...box,
+      x: cx - newW / 2,
+      y: cy - newH / 2,
+      w: newW,
+      h: newH
+    };
+  });
+  
+  sbCanvas.setCropBoxes(resizedBoxes);
+  renderPreviews();
+}
+
 function getActivePage() {
   if (activePageIndex >= 0 && activePageIndex < pages.length) {
     return pages[activePageIndex];
@@ -218,7 +259,7 @@ function loadActivePage() {
     
     // Pass to canvas
     sbCanvas.setImage(imgEl);
-    sbCanvas.setCropBoxes(page.cropBoxes);
+    setCropBoxesAndSync(page.cropBoxes, true);
     sbCanvas.lockAspectRatio = page.settings.lockAspectRatio !== undefined ? page.settings.lockAspectRatio : true;
     sbCanvas.setSelectedBoxId(page.selectedBoxId || null);
 
@@ -465,7 +506,7 @@ function bindUIEvents() {
     if (e.target.files.length > 0) {
       try {
         const boxes = await importJSONLayout(e.target.files[0]);
-        sbCanvas.setCropBoxes(boxes);
+        setCropBoxesAndSync(boxes, true);
         recordUndoState();
         saveCurrentPageState();
         renderPreviews();
@@ -551,6 +592,17 @@ function bindUIEvents() {
     updateDebugMask();
   });
 
+  if (frameResize) {
+    frameResize.addEventListener('input', () => {
+      valFrameResize.textContent = (frameResize.value > 0 ? '+' : '') + frameResize.value + 'px';
+      applyFrameResize();
+    });
+
+    frameResize.addEventListener('change', () => {
+      saveCurrentPageState();
+    });
+  }
+
   btnDetectFrames.addEventListener('click', () => runAutoDetection());
 
   // AI confirm/negate buttons
@@ -624,7 +676,8 @@ function bindUIEvents() {
       name: `Panel ${sbCanvas.cropBoxes.length + 1}`
     };
 
-    sbCanvas.cropBoxes.push(newBox);
+    const updatedBoxes = [...sbCanvas.cropBoxes, newBox];
+    setCropBoxesAndSync(updatedBoxes, true);
     sbCanvas.setSelectedBoxId(newBox.id);
     recordUndoState();
     saveCurrentPageState();
@@ -634,7 +687,7 @@ function bindUIEvents() {
 
   btnClearAll.addEventListener('click', () => {
     if (confirm('Clear all crop boxes?')) {
-      sbCanvas.setCropBoxes([]);
+      setCropBoxesAndSync([], true);
       sbCanvas.setSelectedBoxId(null);
       recordUndoState();
       saveCurrentPageState();
@@ -697,7 +750,8 @@ function bindUIEvents() {
           name: `${copied.name} (Copy)`
         };
 
-        sbCanvas.cropBoxes.push(newBox);
+        const updated = [...sbCanvas.cropBoxes, newBox];
+        setCropBoxesAndSync(updated, true);
         sbCanvas.setSelectedBoxId(newBox.id);
         recordUndoState();
         saveCurrentPageState();
@@ -709,7 +763,7 @@ function bindUIEvents() {
     // Delete selected box
     if ((e.key === 'Delete' || e.key === 'Backspace') && sbCanvas.selectedBoxId) {
       e.preventDefault();
-      sbCanvas.setCropBoxes(sbCanvas.cropBoxes.filter(b => b.id !== sbCanvas.selectedBoxId));
+      setCropBoxesAndSync(sbCanvas.cropBoxes.filter(b => b.id !== sbCanvas.selectedBoxId), true);
       sbCanvas.setSelectedBoxId(null);
       recordUndoState();
       saveCurrentPageState();
@@ -1006,7 +1060,7 @@ function generateAutoGrid() {
     offsetY.value
   );
 
-  sbCanvas.setCropBoxes(boxes);
+  setCropBoxesAndSync(boxes, true);
   sbCanvas.setSelectedBoxId(null);
   saveCurrentPageState();
   renderPreviews();
@@ -1047,7 +1101,7 @@ function runAutoDetection() {
     );
 
     if (result && result.boxes.length > 0) {
-      sbCanvas.setCropBoxes(result.boxes);
+      setCropBoxesAndSync(result.boxes, true);
       sbCanvas.setSelectedBoxId(null);
       recordUndoState();
       saveCurrentPageState();
@@ -1197,7 +1251,7 @@ function renderPreviews() {
     deleteBtn.style.color = '#ef4444';
     deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
     deleteBtn.addEventListener('click', () => {
-      sbCanvas.setCropBoxes(sbCanvas.cropBoxes.filter(b => b.id !== box.id));
+      setCropBoxesAndSync(sbCanvas.cropBoxes.filter(b => b.id !== box.id), true);
       if (sbCanvas.selectedBoxId === box.id) sbCanvas.setSelectedBoxId(null);
       recordUndoState();
       saveCurrentPageState();
@@ -1402,7 +1456,7 @@ function triggerUndo() {
   // Restore previous state
   const prev = stack[stack.length - 1];
   
-  sbCanvas.setCropBoxes(prev.cropBoxes);
+  setCropBoxesAndSync(prev.cropBoxes, true);
   sbCanvas.setSelectedBoxId(prev.selectedBoxId);
   applySettingsToUI(prev.settings);
   updateGridSlidersLabels();
