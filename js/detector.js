@@ -635,6 +635,11 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
     }
   }
 
+  // Filter out any box that represents the entire grid/sheet (i.e. too large)
+  finalBoxes = finalBoxes.filter(box => {
+    return !(box.w > img.width * 0.85 && box.h > img.height * 0.85);
+  });
+
   // Overlap NMS
   finalBoxes = mergeOverlappingBoxes(finalBoxes, 0.3);
 

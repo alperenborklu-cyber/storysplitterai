@@ -1137,32 +1137,26 @@ function renderPreviews() {
     
     const thumbContainer = document.createElement('div');
     thumbContainer.className = 'preview-thumb-container';
+    
+    const ratio = box.w / box.h;
+    thumbContainer.style.aspectRatio = `${ratio}`;
 
-    // Offscreen rendering of thumbnail
+    // Offscreen rendering of thumbnail matching the box aspect ratio (no black bars!)
     const off = document.createElement('canvas');
-    off.width = 320;
-    off.height = 180;
-    const offCtx = off.getContext('2d');
-    offCtx.fillStyle = '#000000';
-    offCtx.fillRect(0, 0, 320, 180);
-    
-    const destRatio = 320 / 180;
-    const srcRatio = box.w / box.h;
-    let dw = 320, dh = 180, dx = 0, dy = 0;
-    
-    if (srcRatio > destRatio) {
-      dh = 320 / srcRatio;
-      dy = (180 - dh) / 2;
+    if (ratio > 1) {
+      off.width = 320;
+      off.height = Math.round(320 / ratio);
     } else {
-      dw = 180 * srcRatio;
-      dx = (320 - dw) / 2;
+      off.width = Math.round(180 * ratio);
+      off.height = 180;
     }
-
-    drawImageSafely(offCtx, sbCanvas.img, box.x, box.y, box.w, box.h, dx, dy, dw, dh);
+    const offCtx = off.getContext('2d');
+    
+    drawImageSafely(offCtx, sbCanvas.img, box.x, box.y, box.w, box.h, 0, 0, off.width, off.height);
 
     // Burn Labels into preview if option is set (for visual fidelity)
     if (burnLabelsCheckbox.checked) {
-      burnLabelOnCanvas(offCtx, box.name, 320, 180, 1.0);
+      burnLabelOnCanvas(offCtx, box.name, off.width, off.height, 1.0);
     }
 
     const imgThumb = document.createElement('img');
