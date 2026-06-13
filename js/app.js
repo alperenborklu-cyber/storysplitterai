@@ -350,7 +350,7 @@ function applySettingsToUI(s) {
   valSensitivity.textContent = detectSensitivity.value + '%';
   detectMinSize.value = s.detectMinSize || 80;
   valMinSize.textContent = detectMinSize.value + 'px';
-  trimTextBoxes.checked = s.trimTextBoxes !== undefined ? s.trimTextBoxes : false;
+  trimTextBoxes.checked = s.trimTextBoxes !== undefined ? s.trimTextBoxes : true;
   
   updateAspectRatioValue();
 }
@@ -859,7 +859,7 @@ async function handleBatchUpload(files) {
             detectMode: 'auto',
             detectSensitivity: 88,
             detectMinSize: 80,
-            trimTextBoxes: false
+            trimTextBoxes: true
           },
           zoomLevel: 1.0,
           panX: 0,

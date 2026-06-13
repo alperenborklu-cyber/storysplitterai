@@ -605,33 +605,69 @@ export function detectGrid(img, sensitivity, minSize, trimTextBoxes) {
     }
 
     for (const col of filteredCols) {
+      const colW = col.end - col.start + 1;
+      let photoStartY = row.start;
       let photoEndY = row.end;
-      
+
       if (trimTextBoxes) {
-        let consecutiveWhiteRows = 0;
-        for (let y = row.start + 20; y <= row.end; y++) {
+        const topSearchLimit = Math.min(row.end, row.start + Math.round(rowH * 0.45));
+        
+        // Cache ratios for the entire row to avoid redundant calculation
+        const ratios = [];
+        for (let y = row.start; y <= row.end; y++) {
           let activeCount = 0;
           for (let x = col.start; x <= col.end; x++) {
             if (isNonBg(gray[y * procWidth + x])) activeCount++;
           }
-          const ratio = activeCount / (col.end - col.start + 1);
-          if (ratio < 0.05) {
-            consecutiveWhiteRows++;
-            if (consecutiveWhiteRows >= 4) {
-              photoEndY = y - consecutiveWhiteRows;
+          ratios.push(activeCount / colW);
+        }
+
+        // Downward scan for photo start
+        for (let y = row.start; y <= topSearchLimit; y++) {
+          const idx = y - row.start;
+          if (ratios[idx] >= 0.55) {
+            // Check if next 5 rows also have high ratio on average (sustained image region)
+            let sum = 0;
+            let count = 0;
+            for (let dy = 1; dy <= 5; dy++) {
+              if (idx + dy < ratios.length) {
+                sum += ratios[idx + dy];
+                count++;
+              }
+            }
+            if (count > 0 && (sum / count) >= 0.55) {
+              photoStartY = y;
               break;
             }
-          } else {
-            consecutiveWhiteRows = 0;
+          }
+        }
+
+        // Upward scan for photo end
+        for (let y = row.end; y >= photoStartY + 20; y--) {
+          const idx = y - row.start;
+          if (idx < ratios.length && ratios[idx] >= 0.55) {
+            // Check if previous 5 rows (above this one) also have high ratio on average
+            let sum = 0;
+            let count = 0;
+            for (let dy = 1; dy <= 5; dy++) {
+              if (idx - dy >= 0) {
+                sum += ratios[idx - dy];
+                count++;
+              }
+            }
+            if (count > 0 && (sum / count) >= 0.55) {
+              photoEndY = y;
+              break;
+            }
           }
         }
       }
 
       detectedBoxes.push({
         x: col.start / scale,
-        y: row.start / scale,
-        w: (col.end - col.start + 1) / scale,
-        h: (photoEndY - row.start + 1) / scale,
+        y: photoStartY / scale,
+        w: colW / scale,
+        h: (photoEndY - photoStartY + 1) / scale,
         type: 'grid'
       });
     }
