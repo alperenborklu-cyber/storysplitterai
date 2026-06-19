@@ -1354,20 +1354,28 @@ function downloadSingleBox(box) {
   const format = imgFormatSelect.value;
   const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
   
+  let scaleFactor = 1;
+  const minDim = Math.min(box.w, box.h);
+  if (minDim > 0 && minDim < 300) {
+    scaleFactor = 300 / minDim;
+  }
+  const exportW = Math.round(box.w * scaleFactor);
+  const exportH = Math.round(box.h * scaleFactor);
+
   const exportCanvas = document.createElement('canvas');
-  exportCanvas.width = box.w;
-  exportCanvas.height = box.h;
+  exportCanvas.width = exportW;
+  exportCanvas.height = exportH;
   const exportCtx = exportCanvas.getContext('2d');
   
   exportCtx.fillStyle = '#000000';
-  exportCtx.fillRect(0, 0, box.w, box.h);
+  exportCtx.fillRect(0, 0, exportW, exportH);
   
-  drawImageSafely(exportCtx, sbCanvas.img, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
+  drawImageSafely(exportCtx, sbCanvas.img, box.x, box.y, box.w, box.h, 0, 0, exportW, exportH);
 
   if (burnLabelsCheckbox.checked) {
     // scale font size relative to frame dimensions
-    const scale = box.w / 400;
-    burnLabelOnCanvas(exportCtx, box.name, box.w, box.h, Math.max(0.6, scale));
+    const scale = exportW / 400;
+    burnLabelOnCanvas(exportCtx, box.name, exportW, exportH, Math.max(0.6, scale));
   }
 
   const link = document.createElement('a');
@@ -1401,19 +1409,27 @@ btnDownloadZip.addEventListener('click', async () => {
         const pageFolder = pages.length > 1 ? zip.folder(`Page_${pIdx + 1}_${page.name.replace(/\s+/g, '_')}`) : zip;
 
         page.cropBoxes.forEach((box, i) => {
+          let scaleFactor = 1;
+          const minDim = Math.min(box.w, box.h);
+          if (minDim > 0 && minDim < 300) {
+            scaleFactor = 300 / minDim;
+          }
+          const exportW = Math.round(box.w * scaleFactor);
+          const exportH = Math.round(box.h * scaleFactor);
+
           const exportCanvas = document.createElement('canvas');
-          exportCanvas.width = box.w;
-          exportCanvas.height = box.h;
+          exportCanvas.width = exportW;
+          exportCanvas.height = exportH;
           const exportCtx = exportCanvas.getContext('2d');
           
           exportCtx.fillStyle = '#000000';
-          exportCtx.fillRect(0, 0, box.w, box.h);
-          drawImageSafely(exportCtx, offscreenImg, box.x, box.y, box.w, box.h, 0, 0, box.w, box.h);
+          exportCtx.fillRect(0, 0, exportW, exportH);
+          drawImageSafely(exportCtx, offscreenImg, box.x, box.y, box.w, box.h, 0, 0, exportW, exportH);
 
           // Render overlay
           if (burnLabelsCheckbox.checked) {
-            const scale = box.w / 400;
-            burnLabelOnCanvas(exportCtx, box.name, box.w, box.h, Math.max(0.6, scale));
+            const scale = exportW / 400;
+            burnLabelOnCanvas(exportCtx, box.name, exportW, exportH, Math.max(0.6, scale));
           }
 
           const dataUrl = exportCanvas.toDataURL(mimeType, 0.95);
