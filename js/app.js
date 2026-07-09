@@ -96,7 +96,7 @@ const btnConfirmBad = document.getElementById('btnConfirmBad');
 const btnApplyAiSuggestion = document.getElementById('btnApplyAiSuggestion');
 const geminiApiKeyInput = document.getElementById('geminiApiKey');
 const btnToggleApiKey = document.getElementById('btnToggleApiKey');
-const btnGeminiDetect = document.getElementById('btnGeminiDetect');
+
 
 
 // Tabs
@@ -639,7 +639,7 @@ function bindUIEvents() {
     });
   }
 
-  btnDetectFrames.addEventListener('click', () => runAutoDetection());
+  btnDetectFrames.addEventListener('click', () => runGeminiDetection());
 
   // AI confirm/negate buttons
   btnConfirmDetection.addEventListener('click', () => {
@@ -710,10 +710,6 @@ function bindUIEvents() {
         btnToggleApiKey.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Show';
       }
     });
-  }
-
-  if (btnGeminiDetect) {
-    btnGeminiDetect.addEventListener('click', () => runGeminiDetection());
   }
 
   // Manual Crop addition
@@ -1200,9 +1196,9 @@ async function runGeminiDetection() {
     return;
   }
 
-  const originalButtonText = btnGeminiDetect.innerHTML;
-  btnGeminiDetect.disabled = true;
-  btnGeminiDetect.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting...';
+  const originalButtonText = btnDetectFrames.innerHTML;
+  btnDetectFrames.disabled = true;
+  btnDetectFrames.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting...';
   showToast('Connecting to Gemini 2.5 Flash...');
 
   try {
@@ -1330,8 +1326,8 @@ async function runGeminiDetection() {
     console.error(err);
     showToast(`Gemini Detection Failed: ${err.message}`, 'error');
   } finally {
-    btnGeminiDetect.disabled = false;
-    btnGeminiDetect.innerHTML = originalButtonText;
+    btnDetectFrames.disabled = false;
+    btnDetectFrames.innerHTML = originalButtonText;
   }
 }
 

@@ -399,10 +399,6 @@
             </div>
           </div>
 
-          <button class="btn btn-primary" id="btnDetectFrames" style="width: 100%; margin-top: 0.75rem;">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> Run Auto-Detection
-          </button>
-
           <!-- Gemini AI Detection Panel -->
           <div style="border-top: 1px solid var(--border-color); margin-top: 1.5rem; padding-top: 1.25rem;">
             <div class="section-title" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main);">
@@ -410,7 +406,7 @@
             </div>
             
             <div class="guide-tip" style="border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.02);">
-              <i class="fa-solid fa-circle-info" style="color: #10b981;"></i> Use Gemini 2.5 Flash API to detect panel boundaries with advanced visual recognition.
+              <i class="fa-solid fa-circle-info" style="color: #10b981;"></i> Splits storyboard sheets into frames automatically using Gemini 2.5 Flash.
             </div>
 
             <div class="control-group">
@@ -420,11 +416,11 @@
               </label>
               <input type="password" id="geminiApiKey" placeholder="Enter API Key (Google AI Studio)" style="margin-top: 4px;">
             </div>
-
-            <button class="btn btn-success" id="btnGeminiDetect" style="width: 100%; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, #10b981, #6366f1); border: none; font-weight: 700;">
-              <i class="fa-solid fa-wand-magic-sparkles"></i> Run Gemini 2.5 Flash
-            </button>
           </div>
+
+          <button class="btn btn-primary" id="btnDetectFrames" style="width: 100%; margin-top: 0.75rem; background: linear-gradient(135deg, #10b981, #6366f1); border: none; font-weight: 700;">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Run Auto-Detection
+          </button>
         </div>
 
         <!-- Custom / Manual Tab -->
