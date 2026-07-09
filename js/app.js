@@ -1209,11 +1209,20 @@ async function runGeminiDetection() {
     const mimeType = parts[0].match(/:(.*?);/)[1];
     const base64Data = parts[1];
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+    let url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+
+    if (apiKey.startsWith('AIzaSy')) {
+      url += `?key=${apiKey}`;
+    } else {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: headers,
       body: JSON.stringify({
         contents: [
           {
