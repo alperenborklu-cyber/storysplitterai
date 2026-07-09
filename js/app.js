@@ -1191,8 +1191,8 @@ async function runGeminiDetection() {
 
   const apiKey = (geminiApiKeyInput.value || '').trim();
   if (!apiKey) {
-    showToast('Gemini API key is required.', 'error');
-    geminiApiKeyInput.focus();
+    showToast('No API Key. Running local CV detection...', 'info');
+    runAutoDetection();
     return;
   }
 
