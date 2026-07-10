@@ -26,6 +26,53 @@ export function getOtsuThreshold(grayData) {
   return threshold;
 }
 
+export function detectIsDarkBackground(gray, width, height) {
+  const insetsX = [Math.round(width * 0.01), Math.round(width * 0.02), Math.round(width * 0.03), Math.round(width * 0.05)];
+  const insetsY = [Math.round(height * 0.01), Math.round(height * 0.02), Math.round(height * 0.03), Math.round(height * 0.05)];
+  
+  let edgeLumSum = 0;
+  let edgeSampleCount = 0;
+  
+  for (const iy of insetsY) {
+    if (iy >= 0 && iy < height) {
+      for (let x = 0; x < width; x += 5) {
+        edgeLumSum += gray[iy * width + x];
+        edgeLumSum += gray[(height - 1 - iy) * width + x];
+        edgeSampleCount += 2;
+      }
+    }
+  }
+  
+  for (const ix of insetsX) {
+    if (ix >= 0 && ix < width) {
+      for (let y = 0; y < height; y += 5) {
+        edgeLumSum += gray[y * width + ix];
+        edgeLumSum += gray[y * width + (width - 1 - ix)];
+        edgeSampleCount += 2;
+      }
+    }
+  }
+  
+  const edgeLum = edgeSampleCount > 0 ? edgeLumSum / edgeSampleCount : 255;
+  
+  let centerSum = 0;
+  let centerCount = 0;
+  const startX = Math.round(width * 0.15);
+  const endX = Math.round(width * 0.85);
+  const startY = Math.round(height * 0.15);
+  const endY = Math.round(height * 0.85);
+  
+  for (let y = startY; y < endY; y += Math.max(1, Math.round((endY - startY) / 20))) {
+    for (let x = startX; x < endX; x += Math.max(1, Math.round((endX - startX) / 20))) {
+      centerSum += gray[y * width + x];
+      centerCount++;
+    }
+  }
+  const centerLum = centerCount > 0 ? centerSum / centerCount : 255;
+  
+  return (edgeLum < 75 && centerLum < 110);
+}
+
 export function updateDetectionMask(img, mode, sensitivity, minSize) {
   if (!img || !img.src || img.width === 0) return null;
 
@@ -48,24 +95,7 @@ export function updateDetectionMask(img, mode, sensitivity, minSize) {
     gray[i / 4] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
   }
 
-  let edgeLumSum = 0, edgeSampleCount = 0;
-  const edgeThickness = 3;
-  for (let x = 0; x < procWidth; x++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[t * procWidth + x]; // top rows
-      edgeLumSum += gray[(procHeight - 1 - t) * procWidth + x]; // bottom rows
-      edgeSampleCount += 2;
-    }
-  }
-  for (let y = edgeThickness; y < procHeight - edgeThickness; y++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[y * procWidth + t]; // left cols
-      edgeLumSum += gray[y * procWidth + (procWidth - 1 - t)]; // right cols
-      edgeSampleCount += 2;
-    }
-  }
-  const meanEdgeLum = edgeLumSum / edgeSampleCount;
-  const isDarkBackground = meanEdgeLum < 60;
+  const isDarkBackground = detectIsDarkBackground(gray, procWidth, procHeight);
 
   const otsuThreshold = getOtsuThreshold(gray);
 
@@ -363,17 +393,53 @@ export function mergeOverlappingBoxes(boxes, threshold) {
       for (let j = i + 1; j < n; j++) {
         const a = boxes[i];
         const b = boxes[j];
+        
         const x1 = Math.max(a.x, b.x);
         const y1 = Math.max(a.y, b.y);
         const x2 = Math.min(a.x + a.w, b.x + b.w);
         const y2 = Math.min(a.y + a.h, b.y + b.h);
+        
+        let shouldMerge = false;
+        
+        // 1. Standard overlap
         if (x2 > x1 && y2 > y1) {
           const interArea = (x2 - x1) * (y2 - y1);
           const minArea = Math.min(a.w * a.h, b.w * b.h);
           if (interArea / minArea > threshold) {
-            toMerge = [i, j];
-            break;
+            shouldMerge = true;
           }
+        }
+        
+        // 2. Nested check (one box is inside or almost entirely inside the other)
+        if (!shouldMerge && x2 > x1 && y2 > y1) {
+          const interArea = (x2 - x1) * (y2 - y1);
+          const aArea = a.w * a.h;
+          const bArea = b.w * b.h;
+          if (interArea / Math.min(aArea, bArea) > 0.85) {
+            shouldMerge = true;
+          }
+        }
+        
+        // 3. Proximity check (boxes are very close and horizontally/vertically aligned)
+        if (!shouldMerge) {
+          const xOverlap = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+          const yOverlap = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+          const minW = Math.min(a.w, b.w);
+          const minH = Math.min(a.h, b.h);
+          
+          // Vertically adjacent, horizontal overlap is large
+          const verticalClose = (yOverlap <= 0 && Math.abs(yOverlap) <= 15) && (xOverlap / minW > 0.75);
+          // Horizontally adjacent, vertical overlap is large
+          const horizontalClose = (xOverlap <= 0 && Math.abs(xOverlap) <= 15) && (yOverlap / minH > 0.75);
+          
+          if (verticalClose || horizontalClose) {
+            shouldMerge = true;
+          }
+        }
+        
+        if (shouldMerge) {
+          toMerge = [i, j];
+          break;
         }
       }
       if (toMerge) break;
@@ -447,24 +513,7 @@ export function detectGrid(img, sensitivity, minSize, trimTextBoxes) {
     gray[i / 4] = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
   }
 
-  let edgeLumSum = 0, edgeSampleCount = 0;
-  const edgeThickness = 3;
-  for (let x = 0; x < procWidth; x++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[t * procWidth + x];
-      edgeLumSum += gray[(procHeight - 1 - t) * procWidth + x];
-      edgeSampleCount += 2;
-    }
-  }
-  for (let y = edgeThickness; y < procHeight - edgeThickness; y++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[y * procWidth + t];
-      edgeLumSum += gray[y * procWidth + (procWidth - 1 - t)];
-      edgeSampleCount += 2;
-    }
-  }
-  const meanEdgeLum = edgeLumSum / edgeSampleCount;
-  const isDarkBackground = meanEdgeLum < 60;
+  const isDarkBackground = detectIsDarkBackground(gray, procWidth, procHeight);
   const sens = parseInt(sensitivity);
 
   const bgLimit = Math.max(220, Math.min(254, 210 + (sens - 50) * 1.1));
@@ -673,7 +722,10 @@ export function detectGrid(img, sensitivity, minSize, trimTextBoxes) {
     }
   }
 
-  return detectedBoxes;
+  return {
+    boxes: detectedBoxes,
+    isDarkBackground
+  };
 }
 
 export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, aspectRatioValue = 16 / 9) {
@@ -682,11 +734,13 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
   let finalBoxes = [];
   let finalScale = 1.0;
   let finalModeUsed = 'enclosed';
+  let isDarkBg = false;
 
   function detectEnclosed() {
     const result = updateDetectionMask(img, 'enclosed', sensitivity, minSize);
     if (!result) return [];
     const { panelInteriors, scale, procWidth, procHeight, isDarkBackground } = result;
+    isDarkBg = isDarkBackground;
     const componentVisited = new Uint8Array(procWidth * procHeight);
     const detectedBoxes = [];
     const minSz = parseInt(minSize);
@@ -758,7 +812,8 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
   function detectDrawings() {
     const result = updateDetectionMask(img, 'drawings', sensitivity, minSize);
     if (!result) return [];
-    const { panelInteriors, scale, procWidth, procHeight } = result;
+    const { panelInteriors, scale, procWidth, procHeight, isDarkBackground } = result;
+    isDarkBg = isDarkBackground;
     const componentVisited = new Uint8Array(procWidth * procHeight);
     const detectedBoxes = [];
     const minSz = parseInt(minSize);
@@ -821,7 +876,9 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
   }
 
   if (mode === 'grid') {
-    finalBoxes = detectGrid(img, sensitivity, minSize, trimTextBoxes);
+    const gridRes = detectGrid(img, sensitivity, minSize, trimTextBoxes);
+    finalBoxes = gridRes.boxes;
+    isDarkBg = gridRes.isDarkBackground;
     finalModeUsed = 'grid';
   } else if (mode === 'enclosed') {
     finalBoxes = detectEnclosed();
@@ -831,9 +888,10 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
     finalModeUsed = 'drawings';
   } else {
     // Auto Hybrid - Try Structured Grid first, fallback if less than 2 panels found
-    const gridBoxes = detectGrid(img, sensitivity, minSize, trimTextBoxes);
-    if (gridBoxes.length >= 2) {
-      finalBoxes = gridBoxes;
+    const gridRes = detectGrid(img, sensitivity, minSize, trimTextBoxes);
+    if (gridRes.boxes.length >= 2) {
+      finalBoxes = gridRes.boxes;
+      isDarkBg = gridRes.isDarkBackground;
       finalModeUsed = 'grid';
     } else {
       const enclosed = detectEnclosed();
@@ -944,7 +1002,11 @@ export function runDetection(img, mode, sensitivity, minSize, trimTextBoxes, asp
       const g = fullImgData.data[idx + 1];
       const b = fullImgData.data[idx + 2];
       const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-      if (lum > 220) whiteCount++;
+      if (isDarkBg) {
+        if (lum < 55) whiteCount++;
+      } else {
+        if (lum > 215) whiteCount++;
+      }
     }
     return (whiteCount / total) > 0.95;
   }

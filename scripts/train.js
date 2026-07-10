@@ -84,6 +84,53 @@ function getOtsuThreshold(grayData) {
   return threshold;
 }
 
+function detectIsDarkBackground(gray, width, height) {
+  const insetsX = [Math.round(width * 0.01), Math.round(width * 0.02), Math.round(width * 0.03), Math.round(width * 0.05)];
+  const insetsY = [Math.round(height * 0.01), Math.round(height * 0.02), Math.round(height * 0.03), Math.round(height * 0.05)];
+  
+  let edgeLumSum = 0;
+  let edgeSampleCount = 0;
+  
+  for (const iy of insetsY) {
+    if (iy >= 0 && iy < height) {
+      for (let x = 0; x < width; x += 5) {
+        edgeLumSum += gray[iy * width + x];
+        edgeLumSum += gray[(height - 1 - iy) * width + x];
+        edgeSampleCount += 2;
+      }
+    }
+  }
+  
+  for (const ix of insetsX) {
+    if (ix >= 0 && ix < width) {
+      for (let y = 0; y < height; y += 5) {
+        edgeLumSum += gray[y * width + ix];
+        edgeLumSum += gray[y * width + (width - 1 - ix)];
+        edgeSampleCount += 2;
+      }
+    }
+  }
+  
+  const edgeLum = edgeSampleCount > 0 ? edgeLumSum / edgeSampleCount : 255;
+  
+  let centerSum = 0;
+  let centerCount = 0;
+  const startX = Math.round(width * 0.15);
+  const endX = Math.round(width * 0.85);
+  const startY = Math.round(height * 0.15);
+  const endY = Math.round(height * 0.85);
+  
+  for (let y = startY; y < endY; y += Math.max(1, Math.round((endY - startY) / 20))) {
+    for (let x = startX; x < endX; x += Math.max(1, Math.round((endX - startX) / 20))) {
+      centerSum += gray[y * width + x];
+      centerCount++;
+    }
+  }
+  const centerLum = centerCount > 0 ? centerSum / centerCount : 255;
+  
+  return (edgeLum < 75 && centerLum < 110);
+}
+
 // Simplified version of the NMS box merging
 function mergeOverlappingBoxes(boxes, threshold) {
   let merged = true;
@@ -144,24 +191,7 @@ function detectGridNode(jimpImg, sensitivity, minSize) {
     gray[i / 4] = Math.round(0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
   }
 
-  let edgeLumSum = 0, edgeSampleCount = 0;
-  const edgeThickness = 3;
-  for (let x = 0; x < procWidth; x++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[t * procWidth + x];
-      edgeLumSum += gray[(procHeight - 1 - t) * procWidth + x];
-      edgeSampleCount += 2;
-    }
-  }
-  for (let y = edgeThickness; y < procHeight - edgeThickness; y++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[y * procWidth + t];
-      edgeLumSum += gray[y * procWidth + (procWidth - 1 - t)];
-      edgeSampleCount += 2;
-    }
-  }
-  const meanEdgeLum = edgeLumSum / edgeSampleCount;
-  const isDarkBackground = meanEdgeLum < 60;
+  const isDarkBackground = detectIsDarkBackground(gray, procWidth, procHeight);
   const sens = parseInt(sensitivity);
 
   const bgLimit = Math.max(220, Math.min(254, 210 + (sens - 50) * 1.1));
@@ -391,24 +421,7 @@ function runDetectionNode(jimpImg, mode, sensitivity, minSize) {
     gray[i / 4] = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
   }
 
-  // Edge background detection
-  let edgeLumSum = 0, edgeSampleCount = 0;
-  const edgeThickness = 3;
-  for (let x = 0; x < procWidth; x++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[t * procWidth + x];
-      edgeLumSum += gray[(procHeight - 1 - t) * procWidth + x];
-      edgeSampleCount += 2;
-    }
-  }
-  for (let y = edgeThickness; y < procHeight - edgeThickness; y++) {
-    for (let t = 0; t < edgeThickness; t++) {
-      edgeLumSum += gray[y * procWidth + t];
-      edgeLumSum += gray[y * procWidth + (procWidth - 1 - t)];
-      edgeSampleCount += 2;
-    }
-  }
-  const isDarkBackground = (edgeLumSum / edgeSampleCount) < 60;
+  const isDarkBackground = detectIsDarkBackground(gray, procWidth, procHeight);
   const otsuThreshold = getOtsuThreshold(gray);
 
   const integral = new Uint32Array(procWidth * procHeight);

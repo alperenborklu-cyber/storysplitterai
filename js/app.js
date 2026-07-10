@@ -293,6 +293,11 @@ function loadActivePage() {
     sbCanvas.draw();
     updateAutoSaveStatus('Saved');
     showToast(`Loaded ${page.name}`);
+
+    // Auto-detect frames instantly if there are no crop boxes yet
+    if (!page.cropBoxes || page.cropBoxes.length === 0) {
+      runAutoDetection();
+    }
   };
 }
 
