@@ -94,10 +94,6 @@ const btnDetectFrames = document.getElementById('btnDetectFrames');
 const btnConfirmDetection = document.getElementById('btnConfirmDetection');
 const btnConfirmBad = document.getElementById('btnConfirmBad');
 const btnApplyAiSuggestion = document.getElementById('btnApplyAiSuggestion');
-const geminiApiKeyInput = document.getElementById('geminiApiKey');
-const btnToggleApiKey = document.getElementById('btnToggleApiKey');
-
-
 
 // Tabs
 const tabButtons = document.querySelectorAll('.tab-btn');
@@ -171,12 +167,6 @@ async function init() {
       loadActivePage();
     } else {
       showUploadOverlay();
-    }
-
-    // 3.5. Load saved Gemini API Key
-    if (geminiApiKeyInput) {
-      const savedKey = localStorage.getItem('gemini_api_key') || '';
-      geminiApiKeyInput.value = savedKey;
     }
 
     // 4. Bind Events
@@ -639,7 +629,7 @@ function bindUIEvents() {
     });
   }
 
-  btnDetectFrames.addEventListener('click', () => runGeminiDetection());
+  btnDetectFrames.addEventListener('click', () => runAutoDetection());
 
   // AI confirm/negate buttons
   btnConfirmDetection.addEventListener('click', () => {
@@ -689,25 +679,6 @@ function bindUIEvents() {
           updateDebugMask();
         }
         showToast('Applied AI suggestions! Click Run to process.');
-      }
-    });
-  }
-
-  // Gemini API Event Listeners
-  if (geminiApiKeyInput) {
-    geminiApiKeyInput.addEventListener('input', (e) => {
-      localStorage.setItem('gemini_api_key', e.target.value.trim());
-    });
-  }
-
-  if (btnToggleApiKey && geminiApiKeyInput) {
-    btnToggleApiKey.addEventListener('click', () => {
-      if (geminiApiKeyInput.type === 'password') {
-        geminiApiKeyInput.type = 'text';
-        btnToggleApiKey.innerHTML = '<i class="fa-solid fa-eye"></i> Hide';
-      } else {
-        geminiApiKeyInput.type = 'password';
-        btnToggleApiKey.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Show';
       }
     });
   }
@@ -1179,215 +1150,6 @@ function runAutoDetection() {
       showToast('No panels detected. Adjust sensitivity.', 'error');
     }
   }, 50);
-}
-
-// Gemini 2.5 Flash Bounding Box Detection
-async function runGeminiDetection() {
-  const page = getActivePage();
-  if (!page) {
-    showToast('No active page loaded.', 'error');
-    return;
-  }
-
-  const apiKey = (geminiApiKeyInput.value || '').trim();
-  if (!apiKey) {
-    showToast('No API Key. Running local CV detection...', 'info');
-    runAutoDetection();
-    return;
-  }
-
-  const originalButtonText = btnDetectFrames.innerHTML;
-  btnDetectFrames.disabled = true;
-  btnDetectFrames.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Detecting...';
-  showToast('Connecting to Gemini 2.5 Flash...');
-
-  try {
-    const parts = page.imageSrc.split(',');
-    if (parts.length < 2) {
-      throw new Error('Invalid image format in session.');
-    }
-    const mimeType = parts[0].match(/:(.*?);/)[1];
-    const base64Data = parts[1];
-
-    const modelsToTry = [
-      'gemini-3.5-flash',
-      'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash'
-    ];
-
-    let lastError = null;
-    let resJson = null;
-    let success = false;
-    let usedModel = '';
-
-    for (const modelName of modelsToTry) {
-      try {
-        let url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-
-        if (apiKey.startsWith('ya29.')) {
-          headers['Authorization'] = `Bearer ${apiKey}`;
-        } else {
-          url += `?key=${apiKey}`;
-        }
-
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: headers,
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: "Analyze the storyboard sheet and locate each frame/panel box in this image. " +
-                          "Return a JSON object containing a 'panels' array. Each item must have " +
-                          "'box_2d' representing the panel boundary coordinates [ymin, xmin, ymax, xmax] " +
-                          "normalized to 0-1000 scale (where 0,0 is top-left and 1000,1000 is bottom-right), " +
-                          "and a 'label' string denoting the panel number/name. Return ONLY the JSON object. Do not include markdown code block syntax."
-                  },
-                  {
-                    inlineData: {
-                      mimeType: mimeType,
-                      data: base64Data
-                    }
-                  }
-                ]
-              }
-            ],
-            generationConfig: {
-              responseMimeType: "application/json"
-            }
-          })
-        });
-
-        if (!response.ok) {
-          const errDetails = await response.text();
-          let parsedErr;
-          try {
-            parsedErr = JSON.parse(errDetails);
-          } catch(e) {}
-          const errMsg = parsedErr?.error?.message || response.statusText || 'API Call Failed';
-          const errStatus = response.status;
-          
-          if (errStatus === 404 || errMsg.toLowerCase().includes('not found') || errMsg.toLowerCase().includes('model')) {
-            console.warn(`Model ${modelName} not found, trying fallback...`);
-            lastError = new Error(`API Error: ${errStatus} - ${errMsg}`);
-            continue;
-          }
-          throw new Error(`API Error: ${errStatus} - ${errMsg}`);
-        }
-
-        resJson = await response.json();
-        usedModel = modelName;
-        success = true;
-        break; // Exit loop on success
-      } catch (err) {
-        lastError = err;
-        if (err.message.includes('401') || err.message.includes('403')) {
-          break; // Don't loop if it's an auth error
-        }
-      }
-    }
-
-    if (!success) {
-      throw lastError || new Error('All fallback models failed to execute.');
-    }
-
-    if (!resJson.candidates || resJson.candidates.length === 0) {
-      throw new Error('No detection response returned from the model.');
-    }
-
-    let text = resJson.candidates[0].content.parts[0].text.trim();
-    let data;
-    try {
-      if (text.startsWith("```")) {
-        text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
-      }
-      data = JSON.parse(text);
-    } catch (e) {
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        try {
-          data = JSON.parse(jsonMatch[0]);
-        } catch (innerErr) {
-          throw new Error('Failed to parse extracted JSON object from Gemini response: ' + innerErr.message);
-        }
-      } else {
-        throw new Error('Failed to parse Gemini response as JSON: ' + e.message);
-      }
-    }
-
-    if (!data || !data.panels || !Array.isArray(data.panels)) {
-      throw new Error('JSON format is invalid. Expected "panels" array in output.');
-    }
-
-    const imgW = sbCanvas.img.naturalWidth || sbCanvas.img.width;
-    const imgH = sbCanvas.img.naturalHeight || sbCanvas.img.height;
-
-    // Sort panels top-to-bottom, left-to-right
-    const rawPanels = data.panels;
-    rawPanels.sort((a, b) => {
-      if (!a.box_2d || !b.box_2d) return 0;
-      const ay = a.box_2d[0];
-      const ax = a.box_2d[1];
-      const by = b.box_2d[0];
-      const bx = b.box_2d[1];
-      if (Math.abs(ay - by) < 50) {
-        return ax - bx;
-      }
-      return ay - by;
-    });
-
-    let boxId = Date.now();
-    const boxes = [];
-
-    rawPanels.forEach((panel, idx) => {
-      if (!panel.box_2d || panel.box_2d.length < 4) return;
-      const ymin = panel.box_2d[0];
-      const xmin = panel.box_2d[1];
-      const ymax = panel.box_2d[2];
-      const xmax = panel.box_2d[3];
-
-      const maxCoord = Math.max(ymin, xmin, ymax, xmax);
-      const scale = maxCoord <= 1.0 ? 1.0 : 1000.0;
-
-      const x = (xmin / scale) * imgW;
-      const y = (ymin / scale) * imgH;
-      const w = ((xmax - xmin) / scale) * imgW;
-      const h = ((ymax - ymin) / scale) * imgH;
-
-      boxes.push({
-        id: boxId++,
-        x: Math.max(0, Math.round(x)),
-        y: Math.max(0, Math.round(y)),
-        w: Math.min(imgW - Math.round(x), Math.round(w)),
-        h: Math.min(imgH - Math.round(y), Math.round(h)),
-        name: panel.label || `Panel ${idx + 1}`
-      });
-    });
-
-    if (boxes.length > 0) {
-      setCropBoxesAndSync(boxes, true);
-      sbCanvas.setSelectedBoxId(null);
-      recordUndoState();
-      saveCurrentPageState();
-      renderPreviews();
-      sbCanvas.draw();
-      showToast(`Gemini (${usedModel}) detected ${boxes.length} panels successfully!`);
-    } else {
-      showToast('No panels could be identified by Gemini.', 'error');
-    }
-
-  } catch (err) {
-    console.error(err);
-    showToast(`Gemini Detection Failed: ${err.message}`, 'error');
-  } finally {
-    btnDetectFrames.disabled = false;
-    btnDetectFrames.innerHTML = originalButtonText;
-  }
 }
 
 // AI Training UI Sync
