@@ -1228,10 +1228,10 @@ async function runGeminiDetection() {
           'Content-Type': 'application/json'
         };
 
-        if (apiKey.startsWith('AIzaSy')) {
-          url += `?key=${apiKey}`;
-        } else {
+        if (apiKey.startsWith('ya29.')) {
           headers['Authorization'] = `Bearer ${apiKey}`;
+        } else {
+          url += `?key=${apiKey}`;
         }
 
         const response = await fetch(url, {
