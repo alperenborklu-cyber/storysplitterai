@@ -1300,14 +1300,28 @@ async function runGeminiDetection() {
       throw new Error('No detection response returned from the model.');
     }
 
-    let text = resJson.candidates[0].content.parts[0].text;
-    if (text.startsWith("```")) {
-      text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+    let text = resJson.candidates[0].content.parts[0].text.trim();
+    let data;
+    try {
+      if (text.startsWith("```")) {
+        text = text.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
+      }
+      data = JSON.parse(text);
+    } catch (e) {
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          data = JSON.parse(jsonMatch[0]);
+        } catch (innerErr) {
+          throw new Error('Failed to parse extracted JSON object from Gemini response: ' + innerErr.message);
+        }
+      } else {
+        throw new Error('Failed to parse Gemini response as JSON: ' + e.message);
+      }
     }
 
-    const data = JSON.parse(text);
-    if (!data.panels || !Array.isArray(data.panels)) {
-      throw new Error('JSON format is invalid. Expected "panels" array.');
+    if (!data || !data.panels || !Array.isArray(data.panels)) {
+      throw new Error('JSON format is invalid. Expected "panels" array in output.');
     }
 
     const imgW = sbCanvas.img.naturalWidth || sbCanvas.img.width;
