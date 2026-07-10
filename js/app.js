@@ -1209,57 +1209,93 @@ async function runGeminiDetection() {
     const mimeType = parts[0].match(/:(.*?);/)[1];
     const base64Data = parts[1];
 
-    let url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-    const headers = {
-      'Content-Type': 'application/json'
-    };
+    const modelsToTry = [
+      'gemini-3.5-flash',
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-flash'
+    ];
 
-    if (apiKey.startsWith('AIzaSy')) {
-      url += `?key=${apiKey}`;
-    } else {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
+    let lastError = null;
+    let resJson = null;
+    let success = false;
+    let usedModel = '';
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: "Analyze the storyboard sheet and locate each frame/panel box in this image. " +
-                      "Return a JSON object containing a 'panels' array. Each item must have " +
-                      "'box_2d' representing the panel boundary coordinates [ymin, xmin, ymax, xmax] " +
-                      "normalized to 0-1000 scale (where 0,0 is top-left and 1000,1000 is bottom-right), " +
-                      "and a 'label' string denoting the panel number/name. Return ONLY the JSON object. Do not include markdown code block syntax."
-              },
-              {
-                inlineData: {
-                  mimeType: mimeType,
-                  data: base64Data
-                }
-              }
-            ]
-          }
-        ],
-        generationConfig: {
-          responseMimeType: "application/json"
-        }
-      })
-    });
-
-    if (!response.ok) {
-      const errDetails = await response.text();
-      let parsedErr;
+    for (const modelName of modelsToTry) {
       try {
-        parsedErr = JSON.parse(errDetails);
-      } catch(e) {}
-      const errMsg = parsedErr?.error?.message || response.statusText || 'API Call Failed';
-      throw new Error(`API Error: ${response.status} - ${errMsg}`);
+        let url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+
+        if (apiKey.startsWith('AIzaSy')) {
+          url += `?key=${apiKey}`;
+        } else {
+          headers['Authorization'] = `Bearer ${apiKey}`;
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: "Analyze the storyboard sheet and locate each frame/panel box in this image. " +
+                          "Return a JSON object containing a 'panels' array. Each item must have " +
+                          "'box_2d' representing the panel boundary coordinates [ymin, xmin, ymax, xmax] " +
+                          "normalized to 0-1000 scale (where 0,0 is top-left and 1000,1000 is bottom-right), " +
+                          "and a 'label' string denoting the panel number/name. Return ONLY the JSON object. Do not include markdown code block syntax."
+                  },
+                  {
+                    inlineData: {
+                      mimeType: mimeType,
+                      data: base64Data
+                    }
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!response.ok) {
+          const errDetails = await response.text();
+          let parsedErr;
+          try {
+            parsedErr = JSON.parse(errDetails);
+          } catch(e) {}
+          const errMsg = parsedErr?.error?.message || response.statusText || 'API Call Failed';
+          const errStatus = response.status;
+          
+          if (errStatus === 404 || errMsg.toLowerCase().includes('not found') || errMsg.toLowerCase().includes('model')) {
+            console.warn(`Model ${modelName} not found, trying fallback...`);
+            lastError = new Error(`API Error: ${errStatus} - ${errMsg}`);
+            continue;
+          }
+          throw new Error(`API Error: ${errStatus} - ${errMsg}`);
+        }
+
+        resJson = await response.json();
+        usedModel = modelName;
+        success = true;
+        break; // Exit loop on success
+      } catch (err) {
+        lastError = err;
+        if (err.message.includes('401') || err.message.includes('403')) {
+          break; // Don't loop if it's an auth error
+        }
+      }
     }
 
-    const resJson = await response.json();
+    if (!success) {
+      throw lastError || new Error('All fallback models failed to execute.');
+    }
+
     if (!resJson.candidates || resJson.candidates.length === 0) {
       throw new Error('No detection response returned from the model.');
     }
@@ -1326,7 +1362,7 @@ async function runGeminiDetection() {
       saveCurrentPageState();
       renderPreviews();
       sbCanvas.draw();
-      showToast(`Gemini detected ${boxes.length} panels successfully!`);
+      showToast(`Gemini (${usedModel}) detected ${boxes.length} panels successfully!`);
     } else {
       showToast('No panels could be identified by Gemini.', 'error');
     }
