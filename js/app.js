@@ -270,7 +270,7 @@ function loadActivePage() {
     // Pass to canvas
     sbCanvas.setImage(imgEl);
     setCropBoxesAndSync(page.cropBoxes, true);
-    sbCanvas.lockAspectRatio = page.settings.lockAspectRatio !== undefined ? page.settings.lockAspectRatio : true;
+    sbCanvas.lockAspectRatio = page.settings.lockAspectRatio !== undefined ? page.settings.lockAspectRatio : false;
     sbCanvas.setSelectedBoxId(page.selectedBoxId || null);
 
     // Apply zoom/pan state if stored
@@ -338,10 +338,10 @@ function applySettingsToUI(s) {
     aspectRatioSelect.value = s.aspectRatio;
   } else {
     // legacy support
-    if (s.lockAspectRatio === false) {
-      aspectRatioSelect.value = 'free';
-    } else {
+    if (s.lockAspectRatio === true) {
       aspectRatioSelect.value = '16:9';
+    } else {
+      aspectRatioSelect.value = 'free';
     }
   }
   
@@ -856,7 +856,8 @@ async function handleBatchUpload(files) {
             gridRows: 3,
             gridWidth: 320,
             gridHeight: 180,
-            lockAspectRatio: true,
+            lockAspectRatio: false,
+            aspectRatio: 'free',
             gapX: 10,
             gapY: 10,
             offsetX: 20,

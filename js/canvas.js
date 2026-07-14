@@ -14,7 +14,7 @@ export class StoryboardCanvas {
     this.selectedBoxId = null;
     this.showDetectMask = false;
     this.detectionMaskCanvas = null;
-    this.lockAspectRatio = true;
+    this.lockAspectRatio = false;
     this.aspectRatioValue = 16 / 9;
     
     this.zoomLevel = 1.0;
