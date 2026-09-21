@@ -266,12 +266,24 @@
           </div>
 
           <div class="control-group">
-            <label for="gridWidth">Cell Width <span class="value" id="valWidth">0px</span></label>
+            <div class="control-label-row">
+              <label for="gridWidth">Cell Width</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valWidth" class="val-input" min="10" max="10000" value="320">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="gridWidth" min="50" max="3000" value="320">
           </div>
 
           <div class="control-group">
-            <label for="gridHeight">Cell Height <span class="value" id="valHeight">0px</span></label>
+            <div class="control-label-row">
+              <label for="gridHeight">Cell Height</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valHeight" class="val-input" min="10" max="10000" value="180">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="gridHeight" min="28" max="6000" value="180">
             <div id="heightDesc" style="font-size: 0.72rem; color: var(--text-dark); margin-top: 4px;">Height can be adjusted manually</div>
             <div style="margin-top: 8px; display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.15); padding: 6px 10px; border-radius: 4px; gap: 0.5rem;">
@@ -285,22 +297,46 @@
           </div>
 
           <div class="control-group">
-            <label for="gapX">Gap Horizontal <span class="value" id="valGapX">10px</span></label>
+            <div class="control-label-row">
+              <label for="gapX">Gap Horizontal</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valGapX" class="val-input" min="0" max="2000" value="10">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="gapX" min="0" max="500" value="10">
           </div>
 
           <div class="control-group">
-            <label for="gapY">Gap Vertical <span class="value" id="valGapY">10px</span></label>
+            <div class="control-label-row">
+              <label for="gapY">Gap Vertical</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valGapY" class="val-input" min="0" max="2000" value="10">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="gapY" min="0" max="500" value="10">
           </div>
 
           <div class="control-group">
-            <label for="offsetX">X Offset <span class="value" id="valOffsetX">20px</span></label>
+            <div class="control-label-row">
+              <label for="offsetX">X Offset</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valOffsetX" class="val-input" min="0" max="10000" value="20">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="offsetX" min="0" max="3000" value="20">
           </div>
 
           <div class="control-group">
-            <label for="offsetY">Y Offset <span class="value" id="valOffsetY">20px</span></label>
+            <div class="control-label-row">
+              <label for="offsetY">Y Offset</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valOffsetY" class="val-input" min="0" max="10000" value="20">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="offsetY" min="0" max="3000" value="20">
           </div>
         </div>
@@ -322,17 +358,35 @@
           </div>
 
           <div class="control-group">
-            <label for="detectSensitivity">Sensitivity (Threshold) <span class="value" id="valSensitivity">88%</span></label>
+            <div class="control-label-row">
+              <label for="detectSensitivity">Sensitivity (Threshold)</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valSensitivity" class="val-input" min="1" max="100" value="88">
+                <span class="val-unit">%</span>
+              </div>
+            </div>
             <input type="range" id="detectSensitivity" min="50" max="98" value="88">
           </div>
 
           <div class="control-group">
-            <label for="detectMinSize">Min Panel Size <span class="value" id="valMinSize">80px</span></label>
+            <div class="control-label-row">
+              <label for="detectMinSize">Min Panel Size</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valMinSize" class="val-input" min="5" max="1000" value="80">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="detectMinSize" min="20" max="400" value="80">
           </div>
 
           <div class="control-group">
-            <label for="frameResize">Border Fine-Tune <span class="value" id="valFrameResize">0px</span></label>
+            <div class="control-label-row">
+              <label for="frameResize">Border Fine-Tune</label>
+              <div class="val-badge" title="Elle değer girmek için tıklayın">
+                <input type="number" id="valFrameResize" class="val-input" min="-100" max="100" value="0">
+                <span class="val-unit">px</span>
+              </div>
+            </div>
             <input type="range" id="frameResize" min="-40" max="40" value="0">
           </div>
 
@@ -469,6 +523,6 @@
   </div>
 
   <!-- Application Controller ES Module -->
-  <script type="module" src="js/app.js?v=1.0.6"></script>
+  <script type="module" src="js/app.js?v=1.0.7"></script>
 </body>
 </html>

@@ -118,7 +118,7 @@ async function init() {
       onBoxesChanged: () => {
         if (frameResize && frameResize.value != 0) {
           frameResize.value = 0;
-          valFrameResize.textContent = '0px';
+          if (valFrameResize) valFrameResize.value = 0;
         }
         lastAutoDetectedBoxes = JSON.parse(JSON.stringify(sbCanvas.cropBoxes || []));
         saveCurrentPageState();
@@ -185,7 +185,7 @@ function setCropBoxesAndSync(boxes, resetSlider = true) {
   if (resetSlider) {
     if (frameResize) {
       frameResize.value = 0;
-      valFrameResize.textContent = '0px';
+      if (valFrameResize) valFrameResize.value = 0;
     }
     lastAutoDetectedBoxes = JSON.parse(JSON.stringify(boxes || []));
   }
@@ -310,6 +310,10 @@ function updateAspectRatioValue() {
     sbCanvas.lockAspectRatio = true;
     sbCanvas.aspectRatioValue = 16 / 9;
     gridHeight.disabled = true;
+    if (valHeight) {
+      valHeight.disabled = true;
+      valHeight.title = "Height is locked to 16:9 ratio based on width";
+    }
     if (heightDesc) heightDesc.textContent = "Height is locked to 16:9 ratio based on width";
     updateGridHeightFromWidth();
   } else if (val === '9:16') {
@@ -317,12 +321,20 @@ function updateAspectRatioValue() {
     sbCanvas.lockAspectRatio = true;
     sbCanvas.aspectRatioValue = 9 / 16;
     gridHeight.disabled = true;
+    if (valHeight) {
+      valHeight.disabled = true;
+      valHeight.title = "Height is locked to 9:16 ratio based on width";
+    }
     if (heightDesc) heightDesc.textContent = "Height is locked to 9:16 ratio based on width";
     updateGridHeightFromWidth();
   } else {
     currentAspectRatio = 16 / 9; // fallback
     sbCanvas.lockAspectRatio = false;
     gridHeight.disabled = false;
+    if (valHeight) {
+      valHeight.disabled = false;
+      valHeight.title = "Elle değer girmek için tıklayın";
+    }
     if (heightDesc) heightDesc.textContent = "Height can be adjusted manually";
   }
 }
@@ -352,12 +364,13 @@ function applySettingsToUI(s) {
 
   detectMode.value = s.detectMode || 'auto';
   detectSensitivity.value = s.detectSensitivity || 88;
-  valSensitivity.textContent = detectSensitivity.value + '%';
+  if (valSensitivity) valSensitivity.value = detectSensitivity.value;
   detectMinSize.value = s.detectMinSize || 80;
-  valMinSize.textContent = detectMinSize.value + 'px';
+  if (valMinSize) valMinSize.value = detectMinSize.value;
   trimTextBoxes.checked = s.trimTextBoxes !== undefined ? s.trimTextBoxes : true;
   
   updateAspectRatioValue();
+  updateGridSlidersLabels();
 }
 
 // Capture current UI controls settings
@@ -610,12 +623,12 @@ function bindUIEvents() {
   });
 
   detectSensitivity.addEventListener('input', () => {
-    valSensitivity.textContent = detectSensitivity.value + '%';
+    if (valSensitivity) valSensitivity.value = detectSensitivity.value;
     if (showDetectMask.checked) updateDebugMask();
   });
 
   detectMinSize.addEventListener('input', () => {
-    valMinSize.textContent = detectMinSize.value + 'px';
+    if (valMinSize) valMinSize.value = detectMinSize.value;
     if (showDetectMask.checked) updateDebugMask();
   });
 
@@ -625,7 +638,7 @@ function bindUIEvents() {
 
   if (frameResize) {
     frameResize.addEventListener('input', () => {
-      valFrameResize.textContent = (frameResize.value > 0 ? '+' : '') + frameResize.value + 'px';
+      if (valFrameResize) valFrameResize.value = frameResize.value;
       applyFrameResize();
     });
 
@@ -633,6 +646,149 @@ function bindUIEvents() {
       saveCurrentPageState();
     });
   }
+
+  // Two-way synchronization for manual editable inputs
+  function setupManualInput(inputEl, sliderEl, onInputCallback) {
+    if (!inputEl || !sliderEl) return;
+
+    inputEl.addEventListener('input', () => {
+      const val = parseInt(inputEl.value);
+      if (!isNaN(val)) {
+        if (sliderEl.max && val > parseInt(sliderEl.max)) {
+          sliderEl.max = val;
+        }
+        sliderEl.value = val;
+        if (onInputCallback) onInputCallback(val);
+      }
+    });
+
+    inputEl.addEventListener('change', () => {
+      recordUndoState();
+      saveCurrentPageState();
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        inputEl.blur();
+      }
+    });
+
+    inputEl.addEventListener('focus', () => {
+      inputEl.select();
+    });
+
+    inputEl.addEventListener('blur', () => {
+      if (inputEl.value === '' || isNaN(parseInt(inputEl.value))) {
+        inputEl.value = sliderEl.value;
+      }
+    });
+  }
+
+  setupManualInput(valWidth, gridWidth, () => {
+    if (aspectRatioSelect.value !== 'free') {
+      updateGridHeightFromWidth();
+    }
+    generateAutoGrid();
+  });
+
+  setupManualInput(valHeight, gridHeight, () => {
+    generateAutoGrid();
+  });
+
+  setupManualInput(valGapX, gapX, () => {
+    generateAutoGrid();
+  });
+
+  setupManualInput(valGapY, gapY, () => {
+    generateAutoGrid();
+  });
+
+  setupManualInput(valOffsetX, offsetX, () => {
+    generateAutoGrid();
+  });
+
+  setupManualInput(valOffsetY, offsetY, () => {
+    generateAutoGrid();
+  });
+
+  if (valSensitivity && detectSensitivity) {
+    valSensitivity.addEventListener('input', () => {
+      const val = parseInt(valSensitivity.value);
+      if (!isNaN(val)) {
+        detectSensitivity.value = Math.max(1, Math.min(100, val));
+        if (showDetectMask.checked) updateDebugMask();
+      }
+    });
+    valSensitivity.addEventListener('change', () => {
+      saveCurrentPageState();
+    });
+    valSensitivity.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); valSensitivity.blur(); }
+    });
+    valSensitivity.addEventListener('focus', () => { valSensitivity.select(); });
+    valSensitivity.addEventListener('blur', () => {
+      if (valSensitivity.value === '' || isNaN(parseInt(valSensitivity.value))) {
+        valSensitivity.value = detectSensitivity.value;
+      }
+    });
+  }
+
+  if (valMinSize && detectMinSize) {
+    valMinSize.addEventListener('input', () => {
+      const val = parseInt(valMinSize.value);
+      if (!isNaN(val)) {
+        if (val > parseInt(detectMinSize.max)) detectMinSize.max = val;
+        detectMinSize.value = val;
+        if (showDetectMask.checked) updateDebugMask();
+      }
+    });
+    valMinSize.addEventListener('change', () => {
+      saveCurrentPageState();
+    });
+    valMinSize.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); valMinSize.blur(); }
+    });
+    valMinSize.addEventListener('focus', () => { valMinSize.select(); });
+    valMinSize.addEventListener('blur', () => {
+      if (valMinSize.value === '' || isNaN(parseInt(valMinSize.value))) {
+        valMinSize.value = detectMinSize.value;
+      }
+    });
+  }
+
+  if (valFrameResize && frameResize) {
+    valFrameResize.addEventListener('input', () => {
+      const val = parseInt(valFrameResize.value);
+      if (!isNaN(val)) {
+        frameResize.value = val;
+        applyFrameResize();
+      }
+    });
+    valFrameResize.addEventListener('change', () => {
+      saveCurrentPageState();
+    });
+    valFrameResize.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); valFrameResize.blur(); }
+    });
+    valFrameResize.addEventListener('focus', () => { valFrameResize.select(); });
+    valFrameResize.addEventListener('blur', () => {
+      if (valFrameResize.value === '' || isNaN(parseInt(valFrameResize.value))) {
+        valFrameResize.value = frameResize.value;
+      }
+    });
+  }
+
+  // Click on badge wrapper to focus and select input
+  document.querySelectorAll('.val-badge').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const input = badge.querySelector('.val-input');
+      if (input && !input.disabled) {
+        input.focus();
+        input.select();
+      }
+    });
+  });
 
   btnDetectFrames.addEventListener('click', () => runAutoDetection());
 
@@ -672,11 +828,11 @@ function bindUIEvents() {
       if (suggestion) {
         detectMode.value = suggestion.suggestedMode;
         detectSensitivity.value = suggestion.suggestedSens;
-        valSensitivity.textContent = suggestion.suggestedSens + '%';
+        if (valSensitivity) valSensitivity.value = suggestion.suggestedSens;
         
         if (suggestion.suggestedMinSize) {
           detectMinSize.value = suggestion.suggestedMinSize;
-          valMinSize.textContent = suggestion.suggestedMinSize + 'px';
+          if (valMinSize) valMinSize.value = suggestion.suggestedMinSize;
         }
         
         saveCurrentPageState();
@@ -1063,18 +1219,21 @@ async function clearWorkspace() {
 function updateGridHeightFromWidth() {
   const w = parseInt(gridWidth.value);
   const h = Math.round(w / currentAspectRatio);
+  if (h > parseInt(gridHeight.max)) {
+    gridHeight.max = h;
+  }
   gridHeight.value = h;
-  valWidth.textContent = w + 'px';
-  valHeight.textContent = h + 'px';
+  if (valWidth) valWidth.value = w;
+  if (valHeight) valHeight.value = h;
 }
 
 function updateGridSlidersLabels() {
-  valWidth.textContent = gridWidth.value + 'px';
-  valHeight.textContent = gridHeight.value + 'px';
-  valGapX.textContent = gapX.value + 'px';
-  valGapY.textContent = gapY.value + 'px';
-  valOffsetX.textContent = offsetX.value + 'px';
-  valOffsetY.textContent = offsetY.value + 'px';
+  if (valWidth) valWidth.value = gridWidth.value;
+  if (valHeight) valHeight.value = gridHeight.value;
+  if (valGapX) valGapX.value = gapX.value;
+  if (valGapY) valGapY.value = gapY.value;
+  if (valOffsetX) valOffsetX.value = offsetX.value;
+  if (valOffsetY) valOffsetY.value = offsetY.value;
 }
 
 function generateAutoGrid() {

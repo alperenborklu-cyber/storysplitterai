@@ -460,13 +460,20 @@ header {
   margin-bottom: 1.25rem;
 }
 
-.control-group label {
+.control-group label,
+.control-label-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-muted);
   margin-bottom: 0.4rem;
+}
+
+.control-label-row label {
+  margin-bottom: 0;
+  cursor: pointer;
 }
 
 .control-group label.checkbox-label {
@@ -479,6 +486,63 @@ header {
 
 .control-group label span.value {
   color: var(--primary);
+}
+
+.val-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 1px 6px;
+  transition: var(--transition);
+  cursor: text;
+}
+
+.val-badge:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.val-badge:focus-within {
+  background: rgba(20, 27, 45, 0.95);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-glow);
+}
+
+.val-input {
+  width: 52px;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #818cf8 !important;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: right;
+  padding: 1px 2px 1px 0 !important;
+  margin: 0 !important;
+  font-family: inherit;
+  -moz-appearance: textfield;
+}
+
+.val-input:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.val-input::-webkit-outer-spin-button,
+.val-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.val-unit {
+  color: var(--text-dark);
+  font-size: 0.75rem;
+  font-weight: 500;
+  user-select: none;
 }
 
 .input-row {
