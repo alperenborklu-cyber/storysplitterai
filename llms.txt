@@ -27,3 +27,4 @@ StorySplitter AI solves the pre-visualization bottleneck in generative video pro
 
 - [Open Source GitHub Repository](https://github.com/alperenborklu-cyber/storysplitterai): Source code, issue tracker, Vite build configuration, and open-source contributions.
 - [Sitemap](https://storysplitterai.com/sitemap.xml): XML sitemap listing indexable web routes and documentation resources.
+- [RSS Feed](https://storysplitterai.com/feed.xml): Machine-readable XML feed of articles, releases, and workflow guides.

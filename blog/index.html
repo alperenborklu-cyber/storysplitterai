@@ -6,15 +6,117 @@
   <title>StorySplitter AI Blog - Storyboard Workflow Guides & AI Filmmaking Tips</title>
   <link rel="icon" type="image/png" href="../favicon.png?v=1.0.4">
   
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://storysplitterai.com/blog/">
+
   <!-- SEO Meta Tags -->
   <meta name="description" content="Discover professional tips, tutorials, and workflows for splitting AI-generated storyboards from Midjourney and Stable Diffusion. Learn how to optimize pre-visualization for AI films.">
   <meta name="keywords" content="AI filmmaking, storyboard splitter, Midjourney storyboard, Stable Diffusion crop, AI film workflow, pre-visualization, crop storyboard panels">
   <meta name="author" content="StorySplitter AI Team">
   <meta name="google-site-verification" content="zKyte5HzmRccM_EOF_Y3oAN7WO8VlcAdvtDFRZnyE3U">
-  
+
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="blog">
+  <meta property="og:url" content="https://storysplitterai.com/blog/">
+  <meta property="og:site_name" content="StorySplitter AI Blog">
+  <meta property="og:title" content="StorySplitter AI Blog - Storyboard Workflow Guides & AI Filmmaking Tips">
+  <meta property="og:description" content="Master pre-visualization, boundary edge detection, aspect ratios, and crop sequencing for AI films. Professional tutorials for Midjourney, Stable Diffusion, and Runway workflows.">
+  <meta property="og:image" content="https://storysplitterai.com/faviconstorysplitter.png">
+  <meta property="og:image:alt" content="StorySplitter AI Blog">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://storysplitterai.com/blog/">
+  <meta name="twitter:title" content="StorySplitter AI Blog - Storyboard Workflow Guides & AI Filmmaking Tips">
+  <meta name="twitter:description" content="Guides and tutorials for splitting AI storyboards, aspect ratio locking, and video generation workflows.">
+  <meta name="twitter:image" content="https://storysplitterai.com/faviconstorysplitter.png">
+
+  <!-- RSS & Feed Discovery -->
+  <link rel="alternate" type="application/rss+xml" title="StorySplitter AI Blog RSS Feed" href="https://storysplitterai.com/feed.xml">
+
   <!-- LLM Context & Agent Discovery -->
   <link rel="describedby" href="../llms.txt">
   <link rel="alternate" type="text/markdown" href="../llms-full.txt" title="StorySplitter AI LLM Documentation">
+
+  <!-- Structured Data: Blog, Breadcrumbs & Articles -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://storysplitterai.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": "https://storysplitterai.com/blog/"
+          }
+        ]
+      },
+      {
+        "@type": "Blog",
+        "@id": "https://storysplitterai.com/blog/#blog",
+        "name": "StorySplitter AI Blog",
+        "description": "Guides, strategies, and tutorials to help you master pre-visualization, boundary edge detection, aspect ratios, and crop sequencing for AI films.",
+        "url": "https://storysplitterai.com/blog/",
+        "publisher": {
+          "@type": "Organization",
+          "name": "StorySplitter AI",
+          "url": "https://storysplitterai.com/",
+          "logo": "https://storysplitterai.com/logo.png"
+        },
+        "blogPost": [
+          {
+            "@type": "BlogPosting",
+            "@id": "https://storysplitterai.com/blog/#article-1",
+            "headline": "How to Split Midjourney or Stable Diffusion Storyboards in Seconds",
+            "description": "Learn how to edge-crop clustered Midjourney and Stable Diffusion storyboard frames automatically into clean 16:9 panels for video generation tools.",
+            "datePublished": "2026-06-12",
+            "dateModified": "2026-10-06",
+            "author": {
+              "@type": "Organization",
+              "name": "StorySplitter AI Team"
+            },
+            "url": "https://storysplitterai.com/blog/#article-1"
+          },
+          {
+            "@type": "BlogPosting",
+            "@id": "https://storysplitterai.com/blog/#article-2",
+            "headline": "The Future of AI Filmmaking: Optimizing Your Storyboard Workflow",
+            "description": "Discover techniques for structured character sheets, zero-server privacy, and session recovery in modern AI film pre-production pipelines.",
+            "datePublished": "2026-06-10",
+            "dateModified": "2026-10-06",
+            "author": {
+              "@type": "Organization",
+              "name": "StorySplitter AI Team"
+            },
+            "url": "https://storysplitterai.com/blog/#article-2"
+          },
+          {
+            "@type": "BlogPosting",
+            "@id": "https://storysplitterai.com/blog/#article-3",
+            "headline": "Aspect Ratios in AI Film: 16:9 vs 9:16 vs Freeform Cropping",
+            "description": "Why aspect ratio locking is crucial for preventing black bar letterboxing and distortion in downstream video diffusion models like Runway and Kling.",
+            "datePublished": "2026-06-08",
+            "dateModified": "2026-10-06",
+            "author": {
+              "@type": "Organization",
+              "name": "StorySplitter AI Team"
+            },
+            "url": "https://storysplitterai.com/blog/#article-3"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -366,7 +468,7 @@
     <div class="blog-grid">
       
       <!-- Article 1 -->
-      <a class="blog-card" onclick="openArticle(1)">
+      <a class="blog-card" id="article-1" href="#article-1" onclick="openArticle(1); return false;">
         <div class="blog-card-img-placeholder">
           <i class="fa-solid fa-wand-magic-sparkles"></i>
           <span class="blog-tag">Tutorial</span>
@@ -385,7 +487,7 @@
       </a>
 
       <!-- Article 2 -->
-      <a class="blog-card" onclick="openArticle(2)">
+      <a class="blog-card" id="article-2" href="#article-2" onclick="openArticle(2); return false;">
         <div class="blog-card-img-placeholder" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(99, 102, 241, 0.15));">
           <i class="fa-solid fa-clapperboard"></i>
           <span class="blog-tag">Workflow</span>
@@ -404,7 +506,7 @@
       </a>
 
       <!-- Article 3 -->
-      <a class="blog-card" onclick="openArticle(3)">
+      <a class="blog-card" id="article-3" href="#article-3" onclick="openArticle(3); return false;">
         <div class="blog-card-img-placeholder" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(99, 102, 241, 0.15));">
           <i class="fa-solid fa-crop-simple"></i>
           <span class="blog-tag">Guides</span>
@@ -445,6 +547,33 @@
       </div>
     </div>
   </div>
+
+  <!-- Crawlable Static Content for Search Spiders & Screen Readers -->
+  <noscript>
+    <div style="max-width: 900px; margin: 3rem auto; padding: 2rem; background: rgba(20, 27, 45, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;">
+      <h2 style="font-size: 1.8rem; margin-bottom: 2rem; color: #fff;">Full Blog Guides (Static Index)</h2>
+      
+      <article id="static-article-1" style="margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2rem;">
+        <h3 style="font-size: 1.4rem; color: #a5b4fc; margin-bottom: 0.5rem;">How to Split Midjourney or Stable Diffusion Storyboards in Seconds</h3>
+        <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem;">Published: June 12, 2026 | Category: Tutorial | 5 min read</p>
+        <p style="color: #d1d5db; line-height: 1.6; margin-bottom: 1rem;">Generative AI tools like Midjourney, Stable Diffusion, and DALL-E 3 have completely revolutionized pre-production. Filmmakers can type a prompt and receive a full, photorealistic storyboard in seconds. However, these tools usually output their generation as a clustered sheet (such as a 2x2 grid or a multi-panel storyboard block).</p>
+        <p style="color: #d1d5db; line-height: 1.6; margin-bottom: 1rem;">Before you can use these panels in video generators like Runway, Pika Labs, or Luma Dream Machine, you need to crop each frame out as an individual, high-quality file. Doing this manually in Photoshop or MS Paint is slow, tedious, and ruins your creative momentum. StorySplitter AI provides Smart Auto-Detect edge detection, Uniform Grid mode, and aspect ratio locking (16:9, 9:16) with 1-click ZIP export.</p>
+      </article>
+
+      <article id="static-article-2" style="margin-bottom: 3rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 2rem;">
+        <h3 style="font-size: 1.4rem; color: #a5b4fc; margin-bottom: 0.5rem;">The Future of AI Filmmaking: Optimizing Your Storyboard Workflow</h3>
+        <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem;">Published: June 10, 2026 | Category: Workflow | 6 min read</p>
+        <p style="color: #d1d5db; line-height: 1.6; margin-bottom: 1rem;">In traditional cinema, storyboarding is a labor-intensive process requiring concept artists, sketch artists, and constant rounds of revisions. In the era of AI filmmaking, a single director can write, prompt, and generate cinematic visual sheets in minutes. The bottleneck has shifted: it is now about organizing, formatting, and preparing art for motion synthesis.</p>
+        <p style="color: #d1d5db; line-height: 1.6; margin-bottom: 1rem;">To maintain consistency across 50 to 100 shots, directors should use consistent character references (--cref in Midjourney), zero-server browser tools to preserve confidential intellectual property, and portable .storysplitter project archives for instant session recovery.</p>
+      </article>
+
+      <article id="static-article-3" style="margin-bottom: 1rem;">
+        <h3 style="font-size: 1.4rem; color: #a5b4fc; margin-bottom: 0.5rem;">Aspect Ratios in AI Film: 16:9 vs 9:16 vs Freeform Cropping</h3>
+        <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem;">Published: June 08, 2026 | Category: Guides | 4 min read</p>
+        <p style="color: #d1d5db; line-height: 1.6; margin-bottom: 1rem;">Aspect ratio determines composition and pacing. Widescreen ratios (16:9 or 2.39:1) evoke cinematic grandeur, while vertical 9:16 is optimized for mobile feeds (TikTok, Reels, Shorts). Slicing AI storyboards with a rigid aspect lock ensures downstream video diffusion models like Runway, Kling, or Luma do not introduce letterboxing black bars or distorted warping.</p>
+      </article>
+    </div>
+  </noscript>
 
   <!-- Footer -->
   <div class="blog-footer">
@@ -551,11 +680,23 @@
       
       document.getElementById('articleModal').style.display = 'flex';
       document.body.style.overflow = 'hidden';
+
+      // Update URL hash without jumping page
+      if (history.replaceState) {
+        history.replaceState(null, null, '#article-' + id);
+      } else {
+        window.location.hash = 'article-' + id;
+      }
     }
 
     function closeArticle() {
       document.getElementById('articleModal').style.display = 'none';
       document.body.style.overflow = 'auto';
+
+      // Clear URL hash cleanly
+      if (history.replaceState) {
+        history.replaceState(null, null, window.location.pathname + window.location.search);
+      }
     }
 
     function closeArticleOutside(e) {
@@ -563,6 +704,21 @@
         closeArticle();
       }
     }
+
+    // Auto-open article if URL contains hash (e.g., #article-1)
+    function checkHashRoute() {
+      const hash = window.location.hash;
+      const match = hash.match(/^#article-([1-3])$/);
+      if (match) {
+        openArticle(parseInt(match[1], 10));
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', checkHashRoute);
+    window.addEventListener('hashchange', checkHashRoute);
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeArticle();
+    });
   </script>
 </body>
 </html>

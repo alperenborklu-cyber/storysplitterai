@@ -6,15 +6,167 @@
   <title>StorySplitter AI - Professional Multi-Page Storyboard Frame Extractor</title>
   <link rel="icon" type="image/png" href="favicon.png?v=1.0.4">
   
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://storysplitterai.com/">
+
   <!-- SEO Meta Tags -->
   <meta name="description" content="Extract, crop, and batch-process frames from single or multi-page AI storyboard sheets. Run auto-detection, edit labels in-canvas, and export with autosave and session recovery.">
-  <meta name="keywords" content="storyboard, frame extractor, AI storyboard, crop boxes, panel detector, batch processing, storysplitter">
+  <meta name="keywords" content="storyboard splitter, AI storyboard, crop boxes, panel detector, batch processing, Midjourney storyboard, 16:9 crop, storysplitter">
   <meta name="author" content="StorySplitter AI Team">
   <meta name="google-site-verification" content="zKyte5HzmRccM_EOF_Y3oAN7WO8VlcAdvtDFRZnyE3U">
-  
+
+  <!-- Open Graph / Facebook / Discord -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://storysplitterai.com/">
+  <meta property="og:site_name" content="StorySplitter AI">
+  <meta property="og:title" content="StorySplitter AI - Professional Multi-Page Storyboard Frame Extractor">
+  <meta property="og:description" content="Extract, crop, and batch-process frames from single or multi-page AI storyboard sheets. Run auto-detection, lock aspect ratios (16:9, 9:16), and export with 100% in-browser privacy.">
+  <meta property="og:image" content="https://storysplitterai.com/faviconstorysplitter.png">
+  <meta property="og:image:alt" content="StorySplitter AI Storyboard Frame Extractor">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://storysplitterai.com/">
+  <meta name="twitter:title" content="StorySplitter AI - Professional Multi-Page Storyboard Frame Extractor">
+  <meta name="twitter:description" content="Split AI Storyboards into clean 16:9 or 9:16 panels instantly with 100% in-browser privacy. Auto-detection, aspect locks, and batch ZIP export.">
+  <meta name="twitter:image" content="https://storysplitterai.com/faviconstorysplitter.png">
+
+  <!-- RSS & Feed Discovery -->
+  <link rel="alternate" type="application/rss+xml" title="StorySplitter AI News & Guides" href="https://storysplitterai.com/feed.xml">
+
   <!-- LLM Context & Agent Discovery -->
   <link rel="describedby" href="/llms.txt">
   <link rel="alternate" type="text/markdown" href="/llms-full.txt" title="StorySplitter AI LLM Documentation">
+
+  <!-- Structured Data: WebApplication, HowTo & FAQPage Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://storysplitterai.com/#software",
+        "name": "StorySplitter AI",
+        "url": "https://storysplitterai.com/",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All (Web Browser, Chrome, Firefox, Safari, Edge)",
+        "browserRequirements": "Requires JavaScript. Requires HTML5 Canvas.",
+        "description": "Professional client-side multi-page storyboard frame extractor. Automatically detect panel boundaries, lock frames to 16:9 or 9:16 aspect ratios, and batch export clean ZIP sequences for AI filmmaking.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Adaptive computer vision panel edge detection",
+          "Uniform grid generator with numerical controls",
+          "Aspect ratio locking for 16:9 cinematic and 9:16 vertical video",
+          "100% client-side privacy with zero server uploads",
+          "Multi-page contact sheet sequence management",
+          "Batch ZIP export with automatic sequence numbering",
+          "Session recovery and portable .storysplitter archives"
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "@id": "https://storysplitterai.com/#howto",
+        "name": "How to Split AI Storyboard Sheets into Clean 16:9 Frames",
+        "description": "Step-by-step workflow for extracting individual aspect-locked panels from Midjourney or Stable Diffusion storyboard grids for video generation.",
+        "totalTime": "PT1M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Import Storyboard Sheet",
+            "text": "Drag and drop your AI-generated storyboard sheets from Midjourney, Stable Diffusion, or Flux directly into the browser canvas."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Auto-Detect Borders & Enforce Aspect Ratio",
+            "text": "Run boundary auto-detection or configure grid columns/rows, then select Aspect Lock (16:9 for cinematic film or 9:16 for vertical reels)."
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Export Named ZIP Sequence",
+            "text": "Rename panel labels in-canvas and click Download ZIP to export all isolated high-resolution frames ready for Runway Gen-3, Luma Dream Machine, or Kling AI."
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://storysplitterai.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does StorySplitter AI support multi-page sheets?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can upload multiple sheets at once. They will appear as a structured sequence in the sidebar where you can cycle through pages and add new ones anytime."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I rename individual panels?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolutely. You can edit panel labels directly inside the canvas by double-clicking on the label badge, or modify them in the right-hand panel list."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What image formats are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We accept WebP, PNG, JPEG, and TIFF sheets. Export outputs can be selected as lossless PNG or high-quality JPEG compression."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is StorySplitter AI free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! StorySplitter AI is a 100% free open-source utility designed to speed up the pre-visualization workflow for creators worldwide."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my storyboard images uploaded to any server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. StorySplitter AI operates with a 100% client-side privacy architecture. All image processing, edge detection, and ZIP packaging happen locally inside your browser memory without uploading any bytes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which AI video generators are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Panels extracted from StorySplitter AI with aspect ratio locking (16:9 or 9:16) are fully compatible with all AI video tools including Runway Gen-3 Alpha, Luma Dream Machine, Kling AI, Pika Labs, Minimax, and Hailuo."
+            }
+          }
+        ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://storysplitterai.com/#organization",
+        "name": "StorySplitter AI",
+        "url": "https://storysplitterai.com/",
+        "logo": "https://storysplitterai.com/logo.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://storysplitterai.com/#website",
+        "url": "https://storysplitterai.com/",
+        "name": "StorySplitter AI",
+        "publisher": {
+          "@id": "https://storysplitterai.com/#organization"
+        }
+      }
+    ]
+  }
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,6 +249,14 @@
               <i class="fa-solid fa-folder-open"></i> Resume Session (.storysplitter)
             </button>
           </div>
+
+          <!-- GEO Quotable Definition Block -->
+          <div class="geo-summary-box">
+            <h3><i class="fa-solid fa-bolt"></i> Quick Summary & Definition</h3>
+            <p>
+              <strong>StorySplitter AI</strong> is a free, serverless web application engineered for AI filmmakers and visual artists to extract, aspect-lock (16:9, 9:16), and batch-export individual panels from Midjourney, Stable Diffusion, and Flux storyboard sheets. It processes 100% locally in-browser with zero server uploads and full offline security.
+            </p>
+          </div>
         </div>
 
         <div class="hero-upload-card">
@@ -157,6 +317,67 @@
             <h3>Session Recovery & Undo</h3>
             <p>Export entire work sessions as a <code>.storysplitter</code> bundle. Drag it back in to resume edits with full undo/redo stack recovery.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- GEO Comparison Matrix Section -->
+      <div class="landing-section">
+        <h2 class="section-heading">Why Filmmakers Choose StorySplitter AI</h2>
+        <div class="comparison-table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Capability / Feature</th>
+                <th class="highlight-col">StorySplitter AI</th>
+                <th>Adobe Photoshop / GIMP</th>
+                <th>Generic Web Croppers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Frame Slicing Method</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> AI Edge Detect + Uniform Grid</span></td>
+                <td>Manual slice tool & guidelines</td>
+                <td>Manual single-crop boxes</td>
+              </tr>
+              <tr>
+                <td><strong>Aspect Ratio Locking</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> 16:9 Cinema & 9:16 Shorts Locked</span></td>
+                <td>Requires manual math per slice</td>
+                <td><span class="t-badge t-cross"><i class="fa-solid fa-xmark"></i> Typically unconstrained</span></td>
+              </tr>
+              <tr>
+                <td><strong>Data Privacy & Security</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> 100% Client-Side (Zero Upload)</span></td>
+                <td><span class="t-badge t-check"><i class="fa-solid fa-check"></i> Local desktop app</span></td>
+                <td><span class="t-badge t-cross"><i class="fa-solid fa-xmark"></i> Uploads images to cloud</span></td>
+              </tr>
+              <tr>
+                <td><strong>Multi-Page Sequencing</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> Batch drawer & page cycling</span></td>
+                <td>Requires multiple project files</td>
+                <td><span class="t-badge t-cross"><i class="fa-solid fa-xmark"></i> Single image only</span></td>
+              </tr>
+              <tr>
+                <td><strong>AI Video Integration</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> Native Runway, Luma, Kling ready</span></td>
+                <td>Requires external conversion</td>
+                <td><span class="t-badge t-cross"><i class="fa-solid fa-xmark"></i> Generic image output</span></td>
+              </tr>
+              <tr>
+                <td><strong>Session Persistence</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> .storysplitter portable bundle</span></td>
+                <td>Proprietary .PSD file</td>
+                <td><span class="t-badge t-cross"><i class="fa-solid fa-xmark"></i> Lost on page refresh</span></td>
+              </tr>
+              <tr>
+                <td><strong>Pricing & Licensing</strong></td>
+                <td class="highlight-col"><span class="t-badge t-check"><i class="fa-solid fa-check"></i> 100% Free & Open Source</span></td>
+                <td>$20–$55 / month subscription</td>
+                <td>Freemium / Watermarks</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

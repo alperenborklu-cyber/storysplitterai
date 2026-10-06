@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>StorySplitter AI - Blog &amp; Storyboard Workflow Updates</title>
+    <link>https://storysplitterai.com/</link>
+    <description>Guides, tutorials, and workflows for splitting AI storyboards, aspect ratio locking, and video generation pipelines with Midjourney, Stable Diffusion, and Runway.</description>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 06 Oct 2026 12:00:00 +0300</lastBuildDate>
+    <atom:link href="https://storysplitterai.com/feed.xml" rel="self" type="application/rss+xml" />
+
+    <item>
+      <title>How to Split Midjourney or Stable Diffusion Storyboards in Seconds</title>
+      <link>https://storysplitterai.com/blog/#article-1</link>
+      <guid isPermaLink="true">https://storysplitterai.com/blog/#article-1</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <category>Tutorial</category>
+      <description><![CDATA[Learn how to edge-crop clustered Midjourney and Stable Diffusion storyboard frames automatically into clean 16:9 panels for video generation tools like Runway Gen-3, Luma Dream Machine, and Pika Labs.]]></description>
+    </item>
+
+    <item>
+      <title>The Future of AI Filmmaking: Optimizing Your Storyboard Workflow</title>
+      <link>https://storysplitterai.com/blog/#article-2</link>
+      <guid isPermaLink="true">https://storysplitterai.com/blog/#article-2</guid>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 +0000</pubDate>
+      <category>Workflow</category>
+      <description><![CDATA[Discover pre-visualization optimization strategies for AI cinema: consistent character sheets, zero-server privacy architecture, and session recovery with .storysplitter project archives.]]></description>
+    </item>
+
+    <item>
+      <title>Aspect Ratios in AI Film: 16:9 vs 9:16 vs Freeform Cropping</title>
+      <link>https://storysplitterai.com/blog/#article-3</link>
+      <guid isPermaLink="true">https://storysplitterai.com/blog/#article-3</guid>
+      <pubDate>Mon, 08 Jun 2026 00:00:00 +0000</pubDate>
+      <category>Guides</category>
+      <description><![CDATA[Understanding aspect ratio constraints in AI video synthesis. Why aspect locking is critical to prevent black bar letterboxing and distorted tensor warping in generative video pipelines.]]></description>
+    </item>
+  </channel>
+</rss>
