@@ -1,4 +1,39 @@
+# StorySplitter AI - Robots & AI Crawler Directives
+# Website: https://storysplitterai.com/
+# LLM Summary: https://storysplitterai.com/llms.txt
+# Full LLM Documentation: https://storysplitterai.com/llms-full.txt
+
+# Default Crawlers
 User-agent: *
 Allow: /
 
+# OpenAI Search Bot (ChatGPT Search Results & Citation Answers)
+User-agent: OAI-SearchBot
+Allow: /
+
+# OpenAI User Actions (ChatGPT & Custom GPTs / GPT Actions triggered by user query)
+User-agent: ChatGPT-User
+Allow: /
+
+# OpenAI Foundation Model Training Crawler (Allowed to share crawl results with OAI-SearchBot)
+User-agent: GPTBot
+Allow: /
+
+# OpenAI Ad Landing Page Safety & Relevance Verifier
+User-agent: OAI-AdsBot
+Allow: /
+
+# Anthropic Claude Crawler
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI Search Crawler
+User-agent: PerplexityBot
+Allow: /
+
+# Google AI Extended Crawler
+User-agent: Google-Extended
+Allow: /
+
+# Sitemaps
 Sitemap: https://storysplitterai.com/sitemap.xml
